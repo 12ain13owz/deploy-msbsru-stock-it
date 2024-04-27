@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validate_middleware_1 = require("../../middlewares/validate.middleware");
+const category_schema_1 = require("../../schemas/category.schema");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const status_controller_1 = require("../../controllers/status.controller");
+const router = (0, express_1.Router)();
+router.get('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], status_controller_1.getAllStatusHandler);
+router.post('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(category_schema_1.creatCategorySchema)], status_controller_1.createStatusHandler);
+router.put('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(category_schema_1.updateCategorySchema)], status_controller_1.updateStatusHandler);
+router.delete('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(category_schema_1.deleteCategorySchema)], status_controller_1.deleteStatusHandler);
+exports.default = router;

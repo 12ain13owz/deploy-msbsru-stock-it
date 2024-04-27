@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const log_controller_1 = require("../../controllers/log.controller");
+const validate_middleware_1 = require("../../middlewares/validate.middleware");
+const log_schema_1 = require("../../schemas/log.schema");
+const router = (0, express_1.Router)();
+router.get('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], log_controller_1.getAllLogHandler);
+router.get('/init', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], log_controller_1.getInitialLogHandler);
+router.get('/date/:dateStart/:dateEnd', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByDateSchema)], log_controller_1.getLogByDateHandler);
+router.get('/track/:track', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByTrackSchema)], log_controller_1.getLogByTrackHandler);
+router.get('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByIdSchema)], log_controller_1.getLogByIdHandler);
+exports.default = router;
