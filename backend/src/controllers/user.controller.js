@@ -51,7 +51,7 @@ function createUserHandler(req, res, next) {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 role: role,
-                active: true,
+                active: req.body.active,
                 remark: req.body.remark || '',
             });
             const result = yield (0, user_service_1.createUser)(payload);
