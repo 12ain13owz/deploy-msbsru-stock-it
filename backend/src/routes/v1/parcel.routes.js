@@ -12,6 +12,7 @@ router.get('/init', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActi
 router.get('/date/:dateStart/:dateEnd', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(parcel_schema_1.getParcelByDateSchema)], parcel_controller_1.getParcelByDateHandler);
 router.get('/track/:track', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(parcel_schema_1.getParcelByTrackSchema)], parcel_controller_1.getParcelByTrackHandler);
 router.get('/id/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(parcel_schema_1.getParcelByIdSchema)], parcel_controller_1.getParcelByIdHandler);
+router.get('/code/:code', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(parcel_schema_1.getParcelByCodeSchema)], parcel_controller_1.getParcelByCodeHandler);
 router.post('/', [
     auth_middleware_1.verifyToken,
     auth_middleware_1.isUserActive,

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteParcelSchema = exports.updatePrintParcelSchema = exports.updateQuantityParcelSchema = exports.updateParcelSchema = exports.createParcelSchema = exports.getParcelByIdSchema = exports.getParcelByTrackSchema = exports.getParcelByDateSchema = void 0;
+exports.deleteParcelSchema = exports.updatePrintParcelSchema = exports.updateQuantityParcelSchema = exports.updateParcelSchema = exports.createParcelSchema = exports.getParcelByCodeSchema = exports.getParcelByIdSchema = exports.getParcelByTrackSchema = exports.getParcelByDateSchema = void 0;
 const zod_1 = require("zod");
-const id = 'ไม่พบข้อมูลรหัสพัสดุ';
-const code = 'ไม่พบข้อมูลรหัสพัสดุ';
+const id = 'ไม่พบรหัสพัสดุ';
+const code = 'ไม่พบรหัสพัสดุ';
 const receivedDate = 'ไม่พบวันที่ได้รับพัสดุ';
 const detail = 'ไม่พบรายละเอียดพัสดุ';
 const quantity = 'ไม่พบจำนวนของพัสดุ';
@@ -39,6 +39,13 @@ exports.getParcelByIdSchema = (0, zod_1.object)({
     params: (0, zod_1.object)({
         id: (0, zod_1.string)({ required_error: id }).min(1, {
             message: id,
+        }),
+    }),
+});
+exports.getParcelByCodeSchema = (0, zod_1.object)({
+    params: (0, zod_1.object)({
+        code: (0, zod_1.string)({ required_error: code }).min(1, {
+            message: code,
         }),
     }),
 });

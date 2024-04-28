@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteParcelHandler = exports.updatePrintParcelHandler = exports.decrementQuantityParcelHandler = exports.incrementQuantityParcelHandler = exports.updateParcelHandler = exports.createParcelHandler = exports.getParcelByIdHandler = exports.getParcelByTrackHandler = exports.getParcelByDateHandler = exports.getInitialParcelsHandler = exports.getAllParcelHandler = void 0;
+exports.deleteParcelHandler = exports.updatePrintParcelHandler = exports.decrementQuantityParcelHandler = exports.incrementQuantityParcelHandler = exports.updateParcelHandler = exports.createParcelHandler = exports.getParcelByCodeHandler = exports.getParcelByIdHandler = exports.getParcelByTrackHandler = exports.getParcelByDateHandler = exports.getInitialParcelsHandler = exports.getAllParcelHandler = void 0;
 const parcel_service_1 = require("../services/parcel.service");
 const sequelize_1 = __importDefault(require("../utils/sequelize"));
 const track_service_1 = require("../services/track.service");
@@ -83,7 +83,7 @@ function getParcelByTrackHandler(req, res, next) {
 exports.getParcelByTrackHandler = getParcelByTrackHandler;
 function getParcelByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getParcelByTrackHandler';
+        res.locals.func = 'getParcelByIdHandler';
         try {
             const id = +req.params.id;
             const resParcel = yield (0, parcel_service_1.findParcelById)(id);
@@ -95,15 +95,26 @@ function getParcelByIdHandler(req, res, next) {
     });
 }
 exports.getParcelByIdHandler = getParcelByIdHandler;
+function getParcelByCodeHandler(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'getParcelByCodeHandler';
+        try {
+            const code = (0, helper_1.removeWhitespace)(req.params.code);
+            const resParcels = yield (0, parcel_service_1.findParcelByCode)(code);
+            res.json(resParcels);
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
+exports.getParcelByCodeHandler = getParcelByCodeHandler;
 function createParcelHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'createPercelHandler';
         const t = yield sequelize_1.default.transaction();
         try {
             const code = (0, helper_1.removeWhitespace)(req.body.code);
-            const existingParcel = yield (0, parcel_service_1.findParcelByCode)(code);
-            if (existingParcel)
-                throw (0, helper_1.newError)(400, `รหัสพัสดุ ${code} ซ้ำ`);
             const sequence = yield (0, track_service_1.createTrack)(t);
             const track = yield (0, track_1.generateTrack)(sequence.id);
             const receivedDate = new Date(req.body.receivedDate);
@@ -173,9 +184,6 @@ function updateParcelHandler(req, res, next) {
                 throw (0, helper_1.newError)(404, 'ไม่พบพัสดุ');
             const track = parcel.track;
             const code = (0, helper_1.removeWhitespace)(req.body.code);
-            const existingParcel = yield (0, parcel_service_1.findParcelByCode)(code);
-            if (existingParcel && existingParcel.id !== id)
-                throw (0, helper_1.newError)(400, `รหัสพัสดุ ${code} ซ้ำ`);
             const imageEdit = req.body.imageEdit === 'true' ? true : false;
             const file = req.body.image === 'null' ? null : req.body.image;
             const image = imageEdit ? file : parcel.image;

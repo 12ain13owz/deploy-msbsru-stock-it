@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLogByIdHandler = exports.getLogByTrackHandler = exports.getLogByDateHandler = exports.getInitialLogHandler = exports.getAllLogHandler = void 0;
+exports.getLogByIdHandler = exports.getLogByCodeHandler = exports.getLogByTrackHandler = exports.getLogByDateHandler = exports.getInitialLogHandler = exports.getAllLogHandler = void 0;
 const log_service_1 = require("../services/log.service");
 const helper_1 = require("../utils/helper");
 function getAllLogHandler(req, res, next) {
@@ -62,7 +62,7 @@ function getLogByTrackHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'getLogByTrackHandler';
         try {
-            const track = req.params.track;
+            const track = (0, helper_1.removeWhitespace)(req.params.track);
             const resLogs = yield (0, log_service_1.findLogByTrack)(track);
             res.json(resLogs);
         }
@@ -72,6 +72,20 @@ function getLogByTrackHandler(req, res, next) {
     });
 }
 exports.getLogByTrackHandler = getLogByTrackHandler;
+function getLogByCodeHandler(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'getLogByCodeHandler';
+        try {
+            const code = (0, helper_1.removeWhitespace)(req.params.code);
+            const resLogs = yield (0, log_service_1.findLogByCode)(code);
+            res.json(resLogs);
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
+exports.getLogByCodeHandler = getLogByCodeHandler;
 function getLogByIdHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'getLogByIdHandler';

@@ -10,5 +10,6 @@ router.get('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive],
 router.get('/init', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], log_controller_1.getInitialLogHandler);
 router.get('/date/:dateStart/:dateEnd', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByDateSchema)], log_controller_1.getLogByDateHandler);
 router.get('/track/:track', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByTrackSchema)], log_controller_1.getLogByTrackHandler);
+router.get('/code/:code', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByCodeSchema)], log_controller_1.getLogByCodeHandler);
 router.get('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(log_schema_1.getLogByIdSchema)], log_controller_1.getLogByIdHandler);
 exports.default = router;

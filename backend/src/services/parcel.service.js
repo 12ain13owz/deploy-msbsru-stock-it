@@ -26,7 +26,7 @@ function findParcelByTrack(track) {
 }
 exports.findParcelByTrack = findParcelByTrack;
 function findParcelByCode(code) {
-    return parcel_model_1.default.findOne(Object.assign({ where: { code } }, getParcelQueryOptions()));
+    return parcel_model_1.default.findAll(Object.assign({ where: { code } }, getParcelQueryOptions()));
 }
 exports.findParcelByCode = findParcelByCode;
 function findParcelByDate(dateStart, dateEnd) {

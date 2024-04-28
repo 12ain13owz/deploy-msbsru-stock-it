@@ -23,7 +23,6 @@ exports.default = Parcel.init({
     code: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
     },
     oldCode: {
         type: sequelize_1.DataTypes.STRING,
@@ -60,7 +59,7 @@ exports.default = Parcel.init({
 }, {
     indexes: [
         { unique: true, fields: ['track'] },
-        { unique: true, fields: ['code'] },
+        { fields: ['code'] },
         { fields: ['createdAt'] },
     ],
     sequelize: sequelize_2.default,
