@@ -4,3 +4,7 @@
 
 Dockerfile
 fly.toml
+
+init-database.bat
+init-database.js
+.gitignore
