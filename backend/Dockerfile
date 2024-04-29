@@ -12,7 +12,6 @@ WORKDIR /app
 # Set production environment
 # ENV NODE_ENV="production"
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -27,7 +26,6 @@ RUN npm ci
 # Copy application code
 COPY --link . .
 
-
 # Final stage for app image
 FROM base
 
@@ -35,10 +33,12 @@ FROM base
 COPY --from=build /app /app
 
 # Setup sqlite3 on a separate volume
-RUN mkdir -p /data
-VOLUME /data
+# RUN mkdir -p ./database
+VOLUME /app/database
+VOLUME /app/public
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 # ENV DATABASE_URL="file:///data/sqlite.db"
+ENV DATABASE_URL="./database/ms_stock.sqlite"
 CMD [ "npm", "run", "start" ]
