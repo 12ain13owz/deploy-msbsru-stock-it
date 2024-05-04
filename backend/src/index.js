@@ -32,9 +32,12 @@ const corsOptions = {
 };
 const node_env = config_1.default.get('node_env');
 if (node_env === 'production')
-    corsOptions.origin = ['https://ms-stock-it.web.app'];
+    corsOptions.origin = [
+        'https://ms-stock-it.web.app',
+        'https://ms-stock-it.fly.dev',
+    ];
 else
-    corsOptions.origin = ['http://localhost:4200', 'http://192.168.1.46:4200'];
+    corsOptions.origin = ['http://localhost:4200'];
 const socketOptions = {
     cors: { origin: corsOptions.origin },
 };
@@ -52,10 +55,12 @@ app.use('/image', express_1.default.static(path_1.default.join(__dirname, '../pu
 app.use(health_1.default);
 app.use(index_1.default);
 app.use(error_handler_middleware_1.default);
-// app.get('*.*', express.static(path.join(__dirname, '../browser')));
-// app.all('*', (req, res) => {
-//   res.status(200).sendFile('/', { root: 'browser' });
-// });
+if (node_env === 'production') {
+    app.get('*.*', express_1.default.static(path_1.default.join(__dirname, '../browser')));
+    app.all('*', (req, res) => {
+        res.status(200).sendFile('/', { root: 'browser' });
+    });
+}
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, connect_1.databaseConnect)();
     logger_1.default.info(`Server listening at http://localhost:${port}`);

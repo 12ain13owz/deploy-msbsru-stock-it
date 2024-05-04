@@ -45,7 +45,7 @@ function loginHandler(req, res, next) {
                 path: '/',
                 expires: expiresCookie,
                 httpOnly: true,
-                sameSite: isProduction ? 'none' : 'lax',
+                sameSite: 'lax',
                 secure: isProduction,
             });
             res.json({ accessToken, resUser });
@@ -98,7 +98,7 @@ function refreshTokenHandler(req, res, next) {
                 path: '/',
                 expires: expiresCookie,
                 httpOnly: true,
-                sameSite: isProduction ? 'none' : 'lax',
+                sameSite: 'lax',
                 secure: isProduction,
             });
             res.json({ accessToken: newAccessToken });
