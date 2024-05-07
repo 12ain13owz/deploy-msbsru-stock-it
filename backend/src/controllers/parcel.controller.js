@@ -153,7 +153,7 @@ function createParcelHandler(req, res, next) {
                 decreaseQuantity: false,
                 print: false,
                 printCount: 0,
-                detailLog: 'สร้างพัสดุ',
+                detailLog: 'เพิ่มพัสดุ',
             });
             const resultParcel = yield (0, parcel_service_1.createParcel)(payloadParcel, t);
             const resultLog = yield (0, log_service_1.createLog)(payloadLog, t);
