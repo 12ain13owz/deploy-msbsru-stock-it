@@ -33,13 +33,13 @@ FROM base
 COPY --from=build /app /app
 
 # Setup sqlite3 on a separate volume
-RUN mkdir -p /app/data
+# RUN mkdir -p /app/data
 VOLUME /app/data
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 # ENV DATABASE_URL="file:///app/data/database/ms_stock.sqlite"
-ENV DATABASE_URL="./data/database/ms_stock.sqlite"
+# ENV DATABASE_URL="./data/database/ms_stock.sqlite"
 CMD [ "npm", "run", "start" ]
 
 # Run Test
