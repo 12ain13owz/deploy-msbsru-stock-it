@@ -48,7 +48,7 @@ const MIME_TYPE_MAP = {
 };
 exports.storage = (0, multer_1.diskStorage)({
     destination: (req, file, cb) => {
-        const path = './public/images';
+        const path = './data/images';
         (0, fs_1.mkdirSync)(path, { recursive: true });
         const isValid = MIME_TYPE_MAP[file.mimetype];
         let error = null;

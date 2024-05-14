@@ -8,5 +8,5 @@ const auth_middleware_1 = require("../../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
 router.post('/login', [(0, validate_middleware_1.validate)(auth_schema_1.LoginUserSchema), auth_middleware_1.verifyRecaptcha], auth_controller_1.loginHandler);
 router.delete('/logout', auth_controller_1.logoutHandler);
-router.post('/refresh', auth_controller_1.refreshTokenHandler);
+router.get('/refresh', auth_controller_1.refreshTokenHandler);
 exports.default = router;
