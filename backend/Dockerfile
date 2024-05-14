@@ -33,12 +33,15 @@ FROM base
 COPY --from=build /app /app
 
 # Setup sqlite3 on a separate volume
-# RUN mkdir -p ./database
-VOLUME /app/database
-VOLUME /app/public
+RUN mkdir -p /app/database
+RUN mkdir -p /app/public
+VOLUME [ "/app/database", "/app/public" ]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-ENV DATABASE_URL="file:///app/database/ms_stock.sqlite"
-# ENV DATABASE_URL="./database/ms_stock.sqlite"
+# ENV DATABASE_URL="file:///app/database/ms_stock.sqlite"
+ENV DATABASE_URL="./database/ms_stock.sqlite"
 CMD [ "npm", "run", "start" ]
+
+# Run Test
+# docker run -d -p 3000:3000 -v database:/app/database -v public:/app/public --name test test
