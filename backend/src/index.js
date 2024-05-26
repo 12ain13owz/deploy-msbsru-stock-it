@@ -51,8 +51,8 @@ else {
     corsOptions.origin = [
         'http://localhost:4200',
         'https://localhost:4200',
-        'http://192.168.169.1:4200',
-        'https://192.168.169.1:4200',
+        'http://192.168.1.33:4200',
+        'https://192.168.1.33:4200',
     ];
 }
 const socketOptions = {
