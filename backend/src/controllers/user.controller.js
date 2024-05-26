@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPasswordHandler = exports.forgotPasswordHandler = exports.updateUserHandler = exports.createUserHandler = exports.getAllUserHandler = void 0;
+exports.resetPasswordController = exports.forgotPassworController = exports.updateUserController = exports.createUserController = exports.findAllUserController = void 0;
 const config_1 = __importDefault(require("config"));
 const lodash_1 = require("lodash");
 const fs_1 = require("fs");
@@ -22,11 +22,11 @@ const user_service_1 = require("../services/user.service");
 const user_model_1 = require("../models/user.model");
 const uuid_1 = require("uuid");
 const mailer_1 = require("../utils/mailer");
-function getAllUserHandler(req, res, next) {
+function findAllUserController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getAllUserHandler';
+        res.locals.func = 'findAllUserController';
         try {
-            const resUsers = yield (0, user_service_1.findAllUser)();
+            const resUsers = yield user_service_1.userService.findAll();
             res.json(resUsers);
         }
         catch (error) {
@@ -34,13 +34,13 @@ function getAllUserHandler(req, res, next) {
         }
     });
 }
-exports.getAllUserHandler = getAllUserHandler;
-function createUserHandler(req, res, next) {
+exports.findAllUserController = findAllUserController;
+function createUserController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'createUserHandler';
+        res.locals.func = 'createUserController';
         try {
             const email = (0, helper_1.normalizeUnique)(req.body.email);
-            const user = yield (0, user_service_1.findUserByEmail)(email);
+            const user = yield user_service_1.userService.findByEmail(email);
             if (user)
                 throw (0, helper_1.newError)(400, `E-mail: ${email} นี้มีอยู่ในระบบ`);
             const password = (0, helper_1.hashPassword)(req.body.password);
@@ -54,7 +54,7 @@ function createUserHandler(req, res, next) {
                 active: req.body.active,
                 remark: req.body.remark || '',
             });
-            const result = yield (0, user_service_1.createUser)(payload);
+            const result = yield user_service_1.userService.create(payload);
             const newUser = (0, lodash_1.omit)(result.toJSON(), user_model_1.privateUserFields);
             res.json({
                 message: `เพิ่มผู้ใช้งาน ${email} สำเร็จ`,
@@ -66,14 +66,14 @@ function createUserHandler(req, res, next) {
         }
     });
 }
-exports.createUserHandler = createUserHandler;
-function updateUserHandler(req, res, next) {
+exports.createUserController = createUserController;
+function updateUserController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'updateUserHandler';
+        res.locals.func = 'updateUserController';
         try {
             const id = +req.params.id;
             const email = (0, helper_1.normalizeUnique)(req.body.email);
-            const existingUser = yield (0, user_service_1.findUserByEmail)(email);
+            const existingUser = yield user_service_1.userService.findByEmail(email);
             if (existingUser && existingUser.id !== id)
                 throw (0, helper_1.newError)(400, `แก้ไข E-mail ไม่สำเร็จเนื่องจาก ${email} นี้มีอยู่ในระบบ`);
             const role = req.body.role;
@@ -85,9 +85,9 @@ function updateUserHandler(req, res, next) {
                 active: req.body.active,
                 remark: req.body.remark || '',
             };
-            const result = yield (0, user_service_1.updateUser)(id, payload);
-            if (!result[0])
-                throw (0, helper_1.newError)(400, 'แก้ไขข้อมูลผู้ใช้งานไม่สำเร็จ');
+            const [result] = yield user_service_1.userService.update(id, payload);
+            if (!result)
+                throw (0, helper_1.newError)(400, `แก้ไขข้อมูลผู้ใช้งาน ${email} ไม่สำเร็จ`);
             res.json({
                 message: `แก้ไขข้อมูลผู้ใช้งาน ${email} สำเร็จ`,
                 user: payload,
@@ -98,13 +98,13 @@ function updateUserHandler(req, res, next) {
         }
     });
 }
-exports.updateUserHandler = updateUserHandler;
-function forgotPasswordHandler(req, res, next) {
+exports.updateUserController = updateUserController;
+function forgotPassworController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'forgotPasswordHandler';
+        res.locals.func = 'forgotPassworController';
         try {
             const email = (0, helper_1.normalizeUnique)(req.body.email);
-            const user = yield (0, user_service_1.findUserByEmail)(email);
+            const user = yield user_service_1.userService.findByEmail(email);
             if (!user)
                 throw (0, helper_1.newError)(404, 'ไม่พบ E-mail');
             const createdAt = new Date();
@@ -132,14 +132,14 @@ function forgotPasswordHandler(req, res, next) {
         }
     });
 }
-exports.forgotPasswordHandler = forgotPasswordHandler;
-function resetPasswordHandler(req, res, next) {
+exports.forgotPassworController = forgotPassworController;
+function resetPasswordController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'resetPasswordHandler';
+        res.locals.func = 'resetPasswordController';
         try {
             const id = +req.params.id;
             const passwordResetCode = req.body.passwordResetCode;
-            const user = yield (0, user_service_1.findUserById)(id);
+            const user = yield user_service_1.userService.findById(id);
             if (!user)
                 throw (0, helper_1.newError)(404, 'ไม่พบข้อมูลผู้ใช้งานในระบบ');
             if (!user.passwordResetCode)
@@ -155,8 +155,8 @@ function resetPasswordHandler(req, res, next) {
                 throw (0, helper_1.newError)(400, 'รหัสยืนยันหมดอายุ');
             }
             const hash = (0, helper_1.hashPassword)(req.body.newPassword);
-            const result = yield (0, user_service_1.resetUserPassword)(id, hash);
-            if (!result[0])
+            const [result] = yield user_service_1.userService.resetPassword(id, hash);
+            if (!result)
                 throw (0, helper_1.newError)(400, 'เปลี่ยนรหัสผ่านไม่สำเร็จ');
             res.json({ message: 'เปลี่ยนรหัสผ่านสำเร็จ' });
         }
@@ -165,4 +165,4 @@ function resetPasswordHandler(req, res, next) {
         }
     });
 }
-exports.resetPasswordHandler = resetPasswordHandler;
+exports.resetPasswordController = resetPasswordController;

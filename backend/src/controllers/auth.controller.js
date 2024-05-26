@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshTokenHandler = exports.logoutHandler = exports.loginHandler = void 0;
+exports.refreshTokenController = exports.logoutController = exports.loginController = void 0;
 const config_1 = __importDefault(require("config"));
 const lodash_1 = require("lodash");
 const user_service_1 = require("../services/user.service");
@@ -21,12 +21,12 @@ const user_model_1 = require("../models/user.model");
 const jwt_1 = require("../utils/jwt");
 const tokenKey = 'refresh_token';
 const isProduction = config_1.default.get('node_env') === 'production';
-function loginHandler(req, res, next) {
+function loginController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'loginHandler';
+        res.locals.func = 'loginController';
         try {
             const email = (0, helper_1.normalizeUnique)(req.body.email);
-            const user = yield (0, user_service_1.findUserByEmail)(email);
+            const user = yield user_service_1.userService.findByEmail(email);
             if (!user)
                 throw (0, helper_1.newError)(404, `ไม่พบ E-mail: ${email}`);
             const isValidPassword = (0, helper_1.comparePassword)(req.body.password, user.password);
@@ -55,10 +55,10 @@ function loginHandler(req, res, next) {
         }
     });
 }
-exports.loginHandler = loginHandler;
-function logoutHandler(req, res, next) {
+exports.loginController = loginController;
+function logoutController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'logoutHandler';
+        res.locals.func = 'logoutController';
         try {
             res.clearCookie(tokenKey);
             res.json({ message: 'ออกจากระบบสำเร็จ' });
@@ -68,10 +68,10 @@ function logoutHandler(req, res, next) {
         }
     });
 }
-exports.logoutHandler = logoutHandler;
-function refreshTokenHandler(req, res, next) {
+exports.logoutController = logoutController;
+function refreshTokenController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'refreshTokenHandler';
+        res.locals.func = 'refreshTokenController';
         try {
             const accessToken = (req.headers.authorization || '').replace(/^Bearer\s/, '');
             if (!accessToken)
@@ -85,7 +85,7 @@ function refreshTokenHandler(req, res, next) {
             const decodedRefreshToken = (0, jwt_1.verifyJwt)(refreshToken, 'refreshTokenPublicKey');
             if (!decodedRefreshToken)
                 throw (0, helper_1.newError)(401, 'Token หมดอายุ, กรุณาเข้าสู่ระบบใหม่ (4)', true);
-            const user = yield (0, user_service_1.findUserById)(decodedRefreshToken.userId);
+            const user = yield user_service_1.userService.findById(decodedRefreshToken.userId);
             if (!user)
                 throw (0, helper_1.newError)(404, 'ไม่พบข้อมูลผู้ใช้งานในระบบ', true);
             const newAccessToken = (0, jwt_1.signAccessToken)(user.id);
@@ -109,4 +109,4 @@ function refreshTokenHandler(req, res, next) {
         }
     });
 }
-exports.refreshTokenHandler = refreshTokenHandler;
+exports.refreshTokenController = refreshTokenController;

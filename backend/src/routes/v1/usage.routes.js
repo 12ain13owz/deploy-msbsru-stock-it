@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validate_middleware_1 = require("../../middlewares/validate.middleware");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const usage_controller_1 = require("../../controllers/usage.controller");
+const usage_schema_1 = require("../../schemas/usage.schema");
+const router = (0, express_1.Router)();
+router.get('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], usage_controller_1.findAllUsageController);
+router.post('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(usage_schema_1.usageSchema.create)], usage_controller_1.createUsageController);
+router.put('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(usage_schema_1.usageSchema.update)], usage_controller_1.updateUsageController);
+router.delete('/:id', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, auth_middleware_1.isRoleAdmin, (0, validate_middleware_1.validate)(usage_schema_1.usageSchema.delete)], usage_controller_1.deleteUsageController);
+exports.default = router;

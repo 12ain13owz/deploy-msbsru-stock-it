@@ -10,11 +10,7 @@ class Track extends sequelize_1.Model {
 }
 exports.Track = Track;
 exports.default = Track.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
+    id: { type: sequelize_1.DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 }, {
     sequelize: sequelize_2.default,
     modelName: 'Track',

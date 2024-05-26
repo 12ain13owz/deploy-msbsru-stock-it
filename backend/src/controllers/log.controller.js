@@ -9,27 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLogByIdHandler = exports.getLogByCodeHandler = exports.getLogByTrackHandler = exports.getLogByDateHandler = exports.getInitialLogHandler = exports.getAllLogHandler = void 0;
-const log_service_1 = require("../services/log.service");
+exports.findLogByIdController = exports.findLogByCodeController = exports.findLogByTrackController = exports.findLogByDateController = exports.findAllLogController = exports.initialLogController = void 0;
 const helper_1 = require("../utils/helper");
-function getAllLogHandler(req, res, next) {
+const log_service_1 = require("../services/log.service");
+function initialLogController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getAllLogHandler';
+        res.locals.func = 'initialLogController';
         try {
-            const resLogs = yield (0, log_service_1.findAllLog)();
-            res.json(resLogs);
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-}
-exports.getAllLogHandler = getAllLogHandler;
-function getInitialLogHandler(req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getInitialLogHandler';
-        try {
-            const logs = yield (0, log_service_1.findLimitLog)(50);
+            const logs = yield log_service_1.logService.findLimit(50);
             const resLogs = logs.sort((a, b) => a.id - b.id);
             res.json(resLogs);
         }
@@ -38,10 +25,23 @@ function getInitialLogHandler(req, res, next) {
         }
     });
 }
-exports.getInitialLogHandler = getInitialLogHandler;
-function getLogByDateHandler(req, res, next) {
+exports.initialLogController = initialLogController;
+function findAllLogController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getLogByDateHandler';
+        res.locals.func = 'findAllLogController';
+        try {
+            const resLogs = yield log_service_1.logService.findAll();
+            res.json(resLogs);
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
+exports.findAllLogController = findAllLogController;
+function findLogByDateController(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'findLogByDateController';
         try {
             const dateStart = new Date(req.params.dateStart);
             const dateEnd = new Date(req.params.dateEnd);
@@ -49,7 +49,7 @@ function getLogByDateHandler(req, res, next) {
                 throw (0, helper_1.newError)(400, 'รูปแบบวันที่ไม่ถูกต้อง');
             dateStart.setHours(0, 0, 0, 0);
             dateEnd.setHours(23, 59, 59, 999);
-            const resLogs = yield (0, log_service_1.findLogByDate)(dateStart, dateEnd);
+            const resLogs = yield log_service_1.logService.findByDate(dateStart, dateEnd);
             res.json(resLogs);
         }
         catch (error) {
@@ -57,13 +57,13 @@ function getLogByDateHandler(req, res, next) {
         }
     });
 }
-exports.getLogByDateHandler = getLogByDateHandler;
-function getLogByTrackHandler(req, res, next) {
+exports.findLogByDateController = findLogByDateController;
+function findLogByTrackController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getLogByTrackHandler';
+        res.locals.func = 'findLogByTrackController';
         try {
             const track = (0, helper_1.removeWhitespace)(req.params.track);
-            const resLogs = yield (0, log_service_1.findLogByTrack)(track);
+            const resLogs = yield log_service_1.logService.findByTrack(track);
             res.json(resLogs);
         }
         catch (error) {
@@ -71,13 +71,13 @@ function getLogByTrackHandler(req, res, next) {
         }
     });
 }
-exports.getLogByTrackHandler = getLogByTrackHandler;
-function getLogByCodeHandler(req, res, next) {
+exports.findLogByTrackController = findLogByTrackController;
+function findLogByCodeController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getLogByCodeHandler';
+        res.locals.func = 'findLogByCodeController';
         try {
             const code = (0, helper_1.removeWhitespace)(req.params.code);
-            const resLogs = yield (0, log_service_1.findLogByCode)(code);
+            const resLogs = yield log_service_1.logService.findByCode(code);
             res.json(resLogs);
         }
         catch (error) {
@@ -85,13 +85,13 @@ function getLogByCodeHandler(req, res, next) {
         }
     });
 }
-exports.getLogByCodeHandler = getLogByCodeHandler;
-function getLogByIdHandler(req, res, next) {
+exports.findLogByCodeController = findLogByCodeController;
+function findLogByIdController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getLogByIdHandler';
+        res.locals.func = 'findLogByIdController';
         try {
             const id = +req.params.id;
-            const resLog = yield (0, log_service_1.findLogById)(id);
+            const resLog = yield log_service_1.logService.findById(id);
             res.json(resLog);
         }
         catch (error) {
@@ -99,4 +99,4 @@ function getLogByIdHandler(req, res, next) {
         }
     });
 }
-exports.getLogByIdHandler = getLogByIdHandler;
+exports.findLogByIdController = findLogByIdController;

@@ -9,16 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCategoryHandler = exports.updateCategoryHandler = exports.createCategoryHandler = exports.getAllCategoryHandler = void 0;
+exports.deleteCategoryController = exports.updateCategoryController = exports.createCategoryController = exports.findAllCategoryController = void 0;
 const lodash_1 = require("lodash");
 const helper_1 = require("../utils/helper");
 const category_model_1 = require("../models/category.model");
 const category_service_1 = require("../services/category.service");
-function getAllCategoryHandler(req, res, next) {
+function findAllCategoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'getAllCategoryHandler';
+        res.locals.func = 'findAllCategoryController';
         try {
-            const resCategories = yield (0, category_service_1.findAllCategory)();
+            const resCategories = yield category_service_1.categoryService.findAll();
             res.json(resCategories);
         }
         catch (error) {
@@ -26,21 +26,21 @@ function getAllCategoryHandler(req, res, next) {
         }
     });
 }
-exports.getAllCategoryHandler = getAllCategoryHandler;
-function createCategoryHandler(req, res, next) {
+exports.findAllCategoryController = findAllCategoryController;
+function createCategoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'createCategoryHandler';
+        res.locals.func = 'createCategoryController';
         try {
             const name = (0, helper_1.removeWhitespace)(req.body.name);
-            const category = yield (0, category_service_1.findCategoryByName)(name);
+            const category = yield category_service_1.categoryService.findByName(name);
             if (category)
-                throw (0, helper_1.newError)(400, `ชื่อประเภทพัสดุ ${name} ซ้ำ'`);
+                throw (0, helper_1.newError)(400, `ชื่อคุณสมบัติของครุภัณฑ์ ${name} ซ้ำ'`);
             const payload = new category_model_1.Category({
                 name: name,
                 active: req.body.active,
                 remark: req.body.remark || '',
             });
-            const result = yield (0, category_service_1.createCategory)(payload);
+            const result = yield category_service_1.categoryService.create(payload);
             const newCagegory = (0, lodash_1.omit)(result.toJSON(), helper_1.privateFields);
             res.json({
                 message: `เพิ่มประเภทพัสดุ ${name} สำเร็จ`,
@@ -52,26 +52,29 @@ function createCategoryHandler(req, res, next) {
         }
     });
 }
-exports.createCategoryHandler = createCategoryHandler;
-function updateCategoryHandler(req, res, next) {
+exports.createCategoryController = createCategoryController;
+function updateCategoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'updateCategoryHandler';
+        res.locals.func = 'updateCategoryController';
         try {
             const id = +req.params.id;
+            const cateogory = yield category_service_1.categoryService.findById(id);
+            if (!cateogory)
+                throw (0, helper_1.newError)(400, 'ไม่พบคุณสมบัติของครุภัณฑ์');
             const name = (0, helper_1.removeWhitespace)(req.body.name);
-            const existingCategory = yield (0, category_service_1.findCategoryByName)(name);
+            const existingCategory = yield category_service_1.categoryService.findByName(name);
             if (existingCategory && existingCategory.id !== id)
-                throw (0, helper_1.newError)(400, `ชื่อประเภท ${name} พัสดุซ้ำ`);
+                throw (0, helper_1.newError)(400, `ชื่อคุณสมบัติของครุภัณฑ์ ${name} ซ้ำ'`);
             const payload = {
                 name: name,
                 active: req.body.active,
                 remark: req.body.remark || '',
             };
-            const result = yield (0, category_service_1.updateCategory)(id, payload);
-            if (!result[0])
-                throw (0, helper_1.newError)(400, `แก้ไขประเภทพัสดุ ${name} ไม่สำเร็จ`);
+            const [result] = yield category_service_1.categoryService.update(id, payload);
+            if (!result)
+                throw (0, helper_1.newError)(400, `แก้ไขคุณสมบัติ ${name} ไม่สำเร็จ`);
             res.json({
-                message: `แก้ไขประเภทพัสดุ ${name} สำเร็จ`,
+                message: `แก้ไขคุณสมบัติ ${name} สำเร็จ`,
                 category: payload,
             });
         }
@@ -80,24 +83,24 @@ function updateCategoryHandler(req, res, next) {
         }
     });
 }
-exports.updateCategoryHandler = updateCategoryHandler;
-function deleteCategoryHandler(req, res, next) {
+exports.updateCategoryController = updateCategoryController;
+function deleteCategoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.locals.func = 'deleteCategoryHandler';
+        res.locals.func = 'deleteCategoryController';
         try {
             const id = +req.params.id;
-            const category = yield (0, category_service_1.findCategoryById)(id);
+            const category = yield category_service_1.categoryService.findById(id);
             if (!category)
-                throw (0, helper_1.newError)(400, 'ไม่พบประเภทพัสดุ');
+                throw (0, helper_1.newError)(400, 'ไม่พบคุณสมบัติ (ยี่ห้อ/รุ่น)');
             const name = category.name;
-            const result = yield (0, category_service_1.deleteCategory)(id);
+            const result = yield category_service_1.categoryService.delete(id);
             if (!result)
-                throw (0, helper_1.newError)(400, `ลบประเภทพัสดุ ${name} ไม่สำเร็จ`);
-            res.json({ message: `ลบประเภทพัสดุ ${name} สำเร็จ` });
+                throw (0, helper_1.newError)(400, `ลบคุณสมบัติ ${name} ไม่สำเร็จ`);
+            res.json({ message: `ลบคุณสมบัติ ${name} สำเร็จ` });
         }
         catch (error) {
             next(error);
         }
     });
 }
-exports.deleteCategoryHandler = deleteCategoryHandler;
+exports.deleteCategoryController = deleteCategoryController;

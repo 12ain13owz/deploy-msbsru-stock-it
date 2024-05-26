@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("config"));
+const https_1 = __importDefault(require("https"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
@@ -26,23 +27,37 @@ const error_handler_middleware_1 = __importDefault(require("./middlewares/error-
 const connect_1 = require("./utils/connect");
 const logger_1 = __importDefault(require("./utils/logger"));
 const socket_1 = __importDefault(require("./socket"));
+const fs_1 = require("fs");
+const app = (0, express_1.default)();
+const httpsOptions = {
+    key: (0, fs_1.readFileSync)(path_1.default.join('ssl_private.key')),
+    cert: (0, fs_1.readFileSync)(path_1.default.join('ssl.crt')),
+};
 const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 };
+let server;
 const node_env = config_1.default.get('node_env');
-if (node_env === 'production')
+if (node_env === 'production') {
+    server = (0, node_http_1.createServer)(app);
     corsOptions.origin = [
         'https://ms-stock-it.web.app',
         'https://ms-stock-it.fly.dev',
     ];
-else
-    corsOptions.origin = ['http://localhost:4200'];
+}
+else {
+    server = https_1.default.createServer(httpsOptions, app);
+    corsOptions.origin = [
+        'http://localhost:4200',
+        'https://localhost:4200',
+        'http://192.168.169.1:4200',
+        'https://192.168.169.1:4200',
+    ];
+}
 const socketOptions = {
     cors: { origin: corsOptions.origin },
 };
-const app = (0, express_1.default)();
-const server = (0, node_http_1.createServer)(app);
 const io = new socket_io_1.Server(server, socketOptions);
 const port = config_1.default.get('port');
 (0, socket_1.default)(io);
@@ -51,17 +66,15 @@ app.use((0, morgan_1.default)('dev'));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
-app.use('/image', express_1.default.static(path_1.default.join(__dirname, '../data/images')));
+app.use('/images', express_1.default.static(path_1.default.join(__dirname, '../data/images')));
 app.use(health_1.default);
 app.use(index_1.default);
 app.use(error_handler_middleware_1.default);
-if (node_env === 'production') {
-    app.get('*.*', express_1.default.static(path_1.default.join(__dirname, '../browser')));
-    app.all('*', (req, res) => {
-        res.status(200).sendFile('/', { root: 'browser' });
-    });
-}
+app.get('*.*', express_1.default.static(path_1.default.join(__dirname, '../browser')));
+app.all('*', (req, res) => {
+    res.status(200).sendFile('/', { root: 'browser' });
+});
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, connect_1.databaseConnect)();
-    logger_1.default.info(`Server listening at http://localhost:${port}`);
+    logger_1.default.info(`Server listening at https://localhost:${port}`);
 }));

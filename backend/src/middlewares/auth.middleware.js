@@ -20,6 +20,9 @@ const user_service_1 = require("../services/user.service");
 function verifyRecaptcha(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'verifyRecaptcha';
+        const node_env = config_1.default.get('node_env');
+        if (node_env === 'development')
+            return next();
         try {
             const secretKey = config_1.default.get('recaptcha.secretKey');
             const recaptcha = req.body.recaptcha;
@@ -33,7 +36,7 @@ function verifyRecaptcha(req, res, next) {
                 }),
             });
             if (response.status !== 200)
-                throw (0, helper_1.newError)(response.status, 'การตรวจสอบ reCAPTCHA ไม่สำเร็จ');
+                throw (0, helper_1.newError)(response.status, 'ไม่อนุญาติให้เข้าสู่ระบบ เนื่องจากการตรวจสอบ reCAPTCHA ไม่สำเร็จ');
             next();
         }
         catch (error) {
@@ -65,12 +68,12 @@ function isUserActive(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'isUserActive';
         try {
-            const user = yield (0, user_service_1.findUserById)(res.locals.userId);
+            const user = yield user_service_1.userService.findById(res.locals.userId);
             if (!user)
                 throw (0, helper_1.newError)(404, 'ไม่พบข้อมูลผู้ใช้งานในระบบ', true);
             if (!user.active)
                 throw (0, helper_1.newError)(401, 'บัญชีนี้ไม่ได้รับอนุญาติให้ใช้งาน', true);
-            res.locals.user = user.dataValues;
+            res.locals.user = user.toJSON();
             next();
         }
         catch (error) {

@@ -38,7 +38,7 @@ VOLUME /app/data
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-ENV DATABASE_URL="/app/data/database/ms_stock.sqlite"
+ENV DATABASE_URL="/app/data/database/ms_inventory.sqlite"
 CMD [ "npm", "run", "start" ]
 
 # Run Test
