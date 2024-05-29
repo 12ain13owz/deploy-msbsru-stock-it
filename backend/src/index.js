@@ -29,31 +29,33 @@ const logger_1 = __importDefault(require("./utils/logger"));
 const socket_1 = __importDefault(require("./socket"));
 const fs_1 = require("fs");
 const app = (0, express_1.default)();
-const httpsOptions = {
-    key: (0, fs_1.readFileSync)(path_1.default.join('ssl_private.key')),
-    cert: (0, fs_1.readFileSync)(path_1.default.join('ssl.crt')),
-};
-const corsOptions = {
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-};
+let corsOptions;
 let server;
 const node_env = config_1.default.get('node_env');
 if (node_env === 'production') {
     server = (0, node_http_1.createServer)(app);
-    corsOptions.origin = [
-        'https://ms-stock-it.web.app',
-        'https://ms-stock-it.fly.dev',
-    ];
+    corsOptions = {
+        origin: ['https://ms-stock-it.web.app'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    };
 }
 else {
+    const httpsOptions = {
+        key: (0, fs_1.readFileSync)(path_1.default.join('ssl_private.key')),
+        cert: (0, fs_1.readFileSync)(path_1.default.join('ssl.crt')),
+    };
     server = https_1.default.createServer(httpsOptions, app);
-    corsOptions.origin = [
-        'http://localhost:4200',
-        'https://localhost:4200',
-        'http://192.168.1.33:4200',
-        'https://192.168.1.33:4200',
-    ];
+    corsOptions = {
+        origin: [
+            'http://localhost:4200',
+            'https://localhost:4200',
+            'http://192.168.1.33:4200',
+            'https://192.168.1.33:4200',
+        ],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    };
 }
 const socketOptions = {
     cors: { origin: corsOptions.origin },
