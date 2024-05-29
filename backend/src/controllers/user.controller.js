@@ -58,7 +58,7 @@ function createUserController(req, res, next) {
             const newUser = (0, lodash_1.omit)(result.toJSON(), user_model_1.privateUserFields);
             res.json({
                 message: `เพิ่มผู้ใช้งาน ${email} สำเร็จ`,
-                user: newUser,
+                item: newUser,
             });
         }
         catch (error) {
@@ -90,7 +90,7 @@ function updateUserController(req, res, next) {
                 throw (0, helper_1.newError)(400, `แก้ไขข้อมูลผู้ใช้งาน ${email} ไม่สำเร็จ`);
             res.json({
                 message: `แก้ไขข้อมูลผู้ใช้งาน ${email} สำเร็จ`,
-                user: payload,
+                item: payload,
             });
         }
         catch (error) {

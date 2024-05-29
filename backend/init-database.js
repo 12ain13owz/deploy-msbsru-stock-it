@@ -27,41 +27,13 @@ const User = sequelize.define(
     remark: { type: DataTypes.TEXT },
     passwordResetCode: { type: DataTypes.STRING },
     passwordExpired: { type: DataTypes.DATE },
-    createdAt: { type: DataTypes.DATE },
-    updatedAt: { type: DataTypes.DATE },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
   },
   {
-    indexes: [{ unique: true, fields: ["email"] }],
+    indexes: [{ fields: ["email"] }],
     sequelize,
     modelName: "User",
-    timestamps: true,
-  }
-);
-
-const Parcel = sequelize.define(
-  "Parcel",
-  {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    track: { type: DataTypes.STRING(12), allowNull: false, unique: true },
-    code: { type: DataTypes.STRING, allowNull: false },
-    oldCode: { type: DataTypes.STRING },
-    receivedDate: { type: DataTypes.DATEONLY, allowNull: false },
-    detail: { type: DataTypes.TEXT, allowNull: false },
-    quantity: { type: DataTypes.INTEGER, allowNull: false },
-    print: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
-    remark: { type: DataTypes.TEXT },
-    image: { type: DataTypes.TEXT },
-    createdAt: { type: DataTypes.DATE },
-    updatedAt: { type: DataTypes.DATE },
-  },
-  {
-    indexes: [
-      { unique: true, fields: ["track"] },
-      { fields: ["code"] },
-      { fields: ["createdAt"] },
-    ],
-    sequelize,
-    modelName: "Parcel",
     timestamps: true,
   }
 );
@@ -69,32 +41,28 @@ const Parcel = sequelize.define(
 const Log = sequelize.define(
   "Log",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    track: { type: DataTypes.STRING, allowNull: false },
-    code: { type: DataTypes.STRING },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    track: { type: DataTypes.STRING(12), allowNull: false },
+    code: { type: DataTypes.STRING, allowNull: false },
     oldCode: { type: DataTypes.STRING },
-    receivedDate: { type: DataTypes.DATEONLY },
-    detail: { type: DataTypes.TEXT },
-    quantity: { type: DataTypes.NUMBER },
-    modifyQuantity: { type: DataTypes.NUMBER },
-    firstname: { type: DataTypes.STRING },
-    lastname: { type: DataTypes.STRING },
-    categoryName: { type: DataTypes.STRING },
-    statusName: { type: DataTypes.STRING },
+    description: { type: DataTypes.TEXT, allowNull: false },
+    unit: { type: DataTypes.STRING, allowNull: false },
+    value: { type: DataTypes.FLOAT, allowNull: false },
+    receivedDate: { type: DataTypes.DATEONLY, allowNull: false },
     remark: { type: DataTypes.TEXT },
     image: { type: DataTypes.TEXT },
-    newParcel: { type: DataTypes.BOOLEAN },
-    editParcel: { type: DataTypes.BOOLEAN },
-    increaseQuantity: { type: DataTypes.BOOLEAN },
-    decreaseQuantity: { type: DataTypes.BOOLEAN },
-    print: { type: DataTypes.BOOLEAN },
-    printCount: { type: DataTypes.NUMBER },
-    detailLog: { type: DataTypes.STRING },
-    createdAt: { type: DataTypes.DATE },
+    isCreated: { type: DataTypes.BOOLEAN, allowNull: false },
+    firstname: { type: DataTypes.STRING, allowNull: false },
+    lastname: { type: DataTypes.STRING, allowNull: false },
+    categoryName: { type: DataTypes.STRING, allowNull: false },
+    statusName: { type: DataTypes.STRING, allowNull: false },
+    fundName: { type: DataTypes.STRING, allowNull: false },
+    locationName: { type: DataTypes.STRING, allowNull: false },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     indexes: [
@@ -104,8 +72,7 @@ const Log = sequelize.define(
     ],
     sequelize,
     modelName: "Log",
-    timestamps: true,
-    updatedAt: false,
+    timestamps: false,
   }
 );
 
@@ -126,13 +93,13 @@ const Category = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false, unique: true },
-    active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+    active: { type: DataTypes.BOOLEAN, allowNull: false },
     remark: { type: DataTypes.TEXT },
-    createdAt: { type: DataTypes.DATE },
-    updatedAt: { type: DataTypes.DATE },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
   },
   {
-    indexes: [{ unique: true, fields: ["name"] }],
+    indexes: [{ fields: ["name"] }],
     sequelize,
     modelName: "Category",
     timestamps: true,
@@ -144,26 +111,146 @@ const Status = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false, unique: true },
-    active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+    active: { type: DataTypes.BOOLEAN, allowNull: false },
     remark: { type: DataTypes.TEXT },
-    createdAt: { type: DataTypes.DATE },
-    updatedAt: { type: DataTypes.DATE },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
   },
   {
-    indexes: [{ unique: true, fields: ["name"] }],
+    indexes: [{ fields: ["name"] }],
     sequelize,
     modelName: "Status",
     timestamps: true,
   }
 );
 
-User.hasMany(Parcel);
-Category.hasMany(Parcel);
-Status.hasMany(Parcel);
+const Fund = sequelize.define(
+  "Fund",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false, unique: true },
+    active: { type: DataTypes.BOOLEAN, allowNull: false },
+    remark: { type: DataTypes.TEXT },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
+  },
+  {
+    indexes: [{ fields: ["name"] }],
+    sequelize,
+    modelName: "Fund",
+    timestamps: true,
+  }
+);
 
-Parcel.belongsTo(User);
-Parcel.belongsTo(Category);
-Parcel.belongsTo(Status);
+const Location = sequelize.define(
+  "Location",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false, unique: true },
+    active: { type: DataTypes.BOOLEAN, allowNull: false },
+    remark: { type: DataTypes.TEXT },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
+  },
+  {
+    indexes: [{ fields: ["name"] }],
+    sequelize,
+    modelName: "Location",
+    timestamps: true,
+  }
+);
+
+const Inventory = sequelize.define(
+  "Inventory",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    track: { type: DataTypes.STRING(7), allowNull: false, unique: true },
+    code: { type: DataTypes.STRING, allowNull: false, unique: true },
+    oldCode: { type: DataTypes.STRING },
+    description: { type: DataTypes.TEXT, allowNull: false },
+    unit: { type: DataTypes.STRING, allowNull: false },
+    value: { type: DataTypes.FLOAT, allowNull: false },
+    receivedDate: { type: DataTypes.DATEONLY, allowNull: false },
+    remark: { type: DataTypes.TEXT },
+    image: { type: DataTypes.TEXT },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: User, key: "id" },
+    },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Category, key: "id" },
+    },
+    statusId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Status, key: "id" },
+    },
+    fundId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Fund, key: "id" },
+    },
+    locationId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Location, key: "id" },
+    },
+  },
+  {
+    indexes: [
+      { fields: ["track"] },
+      { fields: ["code"] },
+      { fields: ["createdAt"] },
+    ],
+    sequelize,
+    modelName: "Inventory",
+    timestamps: true,
+  }
+);
+
+const InventoryCheck = sequelize.define(
+  "InventoryCheck",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    year: { type: DataTypes.INTEGER, allowNull: false },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    inventoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Inventory, key: "id" },
+    },
+  },
+  {
+    indexes: [{ fields: ["createdAt"] }, { fields: ["inventoryId"] }],
+    sequelize,
+    modelName: "InventoryCheck",
+    timestamps: false,
+  }
+);
+
+Inventory.belongsTo(User, { foreignKey: "userId" });
+Inventory.belongsTo(Category, { foreignKey: "categoryId" });
+Inventory.belongsTo(Status, { foreignKey: "statusId" });
+Inventory.belongsTo(Fund, { foreignKey: "fundId" });
+Inventory.belongsTo(Location, { foreignKey: "locationId" });
+
+User.hasMany(Inventory, { foreignKey: "userId" });
+Category.hasMany(Inventory, { foreignKey: "categoryId" });
+Status.hasMany(Inventory, { foreignKey: "statusId" });
+Fund.hasMany(Inventory, { foreignKey: "fundId" });
+Location.hasMany(Inventory, { foreignKey: "locationId" });
+
+InventoryCheck.belongsTo(Inventory, { foreignKey: "inventoryId" });
+Inventory.hasMany(InventoryCheck, { foreignKey: "inventoryId" });
 
 const envContent = `
 PORT="3000"
@@ -181,45 +268,11 @@ REFRESH_TOKEN_PRIVATE_KEY="your_refresh_token_private_key"
 REFRESH_TOKEN_PUBLIC_KEY="your_refresh_token_public_key"
 `;
 
-async function initializeDatabase() {
-  try {
-    console.log("1. Create Database ms_stock.sqlite.");
-
-    await sequelize.authenticate();
-    console.log("2. Check connect database.");
-
-    await sequelize.sync();
-    console.log("3. Create table.");
-
-    await generateAdmin();
-    console.log("4. Generate admin.");
-
-    await generateCategory();
-    console.log("5. Generate category.");
-
-    await generateStatus();
-    console.log("6. Generate status.");
-
-    await sequelize.close();
-    console.log("7. Disconnect database.");
-
-    const envFilePath = path.join(__dirname, ".env");
-    if (!fs.existsSync(envFilePath)) {
-      fs.writeFileSync(".env", envContent, "utf8");
-      console.log("8. Create .env");
-    }
-
-    console.log("successfully");
-  } catch (error) {
-    console.log("Error!", error);
-  }
-}
-
 async function generateAdmin() {
+  const email = "admin@mis.com";
   const password = "!Qwer1234";
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  const email = "admin@test.com";
 
   const result = await User.findOne({ where: { email: email } });
   if (result) return;
@@ -228,7 +281,7 @@ async function generateAdmin() {
     email: email,
     password: hash,
     firstname: "Administrator",
-    lastname: "Test",
+    lastname: "MIS",
     role: "admin",
     active: true,
     remark: "",
@@ -239,15 +292,15 @@ async function generateAdmin() {
 
 async function generateCategory() {
   const categories = [
-    { name: "CPU", remark: "" },
-    { name: "Main board", remark: "" },
-    { name: "Display Card", remark: "" },
-    { name: "RAM", remark: "" },
-    { name: "Hard disk", remark: "" },
-    { name: "Power Supply", remark: "" },
-    { name: "Case", remark: "" },
-    { name: "Keyboard", remark: "" },
-    { name: "Mouse", remark: "" },
+    { name: "CPU", active: true, remark: "" },
+    { name: "Main board", active: true, remark: "" },
+    { name: "Display Card", active: true, remark: "" },
+    { name: "RAM", active: true, remark: "" },
+    { name: "Hard disk", active: true, remark: "" },
+    { name: "Power Supply", active: true, remark: "" },
+    { name: "Case", active: true, remark: "" },
+    { name: "Keyboard", active: true, remark: "" },
+    { name: "Mouse", active: true, remark: "" },
   ];
 
   for (const category of categories) {
@@ -260,12 +313,10 @@ async function generateCategory() {
 
 async function generateStatus() {
   const statuses = [
-    { name: "ปกติ", remark: "" },
-    { name: "ชำรุด", remark: "" },
-    { name: "เสื่อมคุณภาพ", remark: "" },
-    { name: "สูญหาย", remark: "" },
-    { name: "เขียนรหัสแล้ว", remark: "" },
-    { name: "ปกติไม่ใช้", remark: "" },
+    { name: "ปกติ", active: true, remark: "" },
+    { name: "ชำรุด", active: true, remark: "" },
+    { name: "เสื่อมคุณภาพ", active: true, remark: "" },
+    { name: "สูญหาย", active: true, remark: "" },
   ];
 
   for (const status of statuses) {
@@ -273,6 +324,81 @@ async function generateStatus() {
     if (result) continue;
 
     await new Status(status).save();
+  }
+}
+
+async function generateFund() {
+  const funds = [
+    { name: "งบประมาณแผ่นดิน", active: true, remark: "" },
+    { name: "งบบำรุงการศึกษา", active: true, remark: "" },
+    { name: "อื่น ๆ", active: true, remark: "" },
+  ];
+
+  for (const fund of funds) {
+    const result = await Fund.findOne({ where: { name: fund.name } });
+    if (result) continue;
+
+    await new Fund(fund).save();
+  }
+}
+
+async function generateLocation() {
+  const locations = [
+    { name: "741", active: true, remark: "" },
+    { name: "742", active: true, remark: "" },
+    { name: "743", active: true, remark: "" },
+    { name: "744", active: true, remark: "" },
+    { name: "745", active: true, remark: "" },
+    { name: "746", active: true, remark: "" },
+    { name: "747", active: true, remark: "" },
+    { name: "748", active: true, remark: "" },
+  ];
+
+  for (const location of locations) {
+    const result = await Fund.findOne({ where: { name: location.name } });
+    if (result) continue;
+
+    await new Location(location).save();
+  }
+}
+
+async function initializeDatabase() {
+  try {
+    console.log("1. Create Database");
+
+    await sequelize.authenticate();
+    console.log("2. Check connect database.");
+
+    await sequelize.sync();
+    console.log("3. Create table.");
+
+    await generateAdmin();
+    console.log("4. Generate admin.");
+
+    // await generateCategory();
+    console.log("5. Generate category.");
+
+    await generateStatus();
+    console.log("6. Generate status.");
+
+    await generateFund();
+    console.log("7. Generate fund.");
+
+    await generateLocation();
+    console.log("8. Generate location.");
+
+    await sequelize.close();
+    console.log("9. Disconnect database.");
+
+    const envFilePath = path.join(__dirname, ".env");
+    if (!fs.existsSync(envFilePath)) {
+      fs.writeFileSync(".env", envContent, "utf8");
+      console.log("10. Create .env");
+    }
+
+    console.log("successfully");
+  } catch (error) {
+    console.log("Error!", error);
   }
 }
 

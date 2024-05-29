@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.categorySehema = void 0;
 const zod_1 = require("zod");
 const regexNumber = new RegExp(/^[0-9]\d*$/);
-const id = 'ไม่พบคุณสมบัติ (ยี่ห้อ/รุ่น)';
-const name = 'ไม่พบคุณสมบัติ (ยี่ห้อ/รุ่น)';
+const id = 'ไม่พบประเภท';
+const name = 'ไม่พบประเภท';
 const active = 'ไม่พบสถานะการใช้งาน';
 exports.categorySehema = {
     create: (0, zod_1.object)({

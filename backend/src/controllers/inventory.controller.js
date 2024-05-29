@@ -131,14 +131,13 @@ function createInventoryController(req, res, next) {
                 unit: req.body.unit,
                 value: value,
                 receivedDate: receivedDate,
-                fundingSource: req.body.fundingSource,
-                location: req.body.location,
                 remark: req.body.remark || '',
                 image: image || '',
                 userId: res.locals.userId,
                 categoryId: +req.body.categoryId,
                 statusId: +req.body.statusId,
-                usageId: +req.body.usageId,
+                fundId: +req.body.fundId,
+                locationId: +req.body.locationId,
             });
             const propertyLog = {
                 track: track,
@@ -150,7 +149,8 @@ function createInventoryController(req, res, next) {
                 lastname: res.locals.user.lastname,
                 categoryName: req.body.categoryName,
                 statusName: req.body.statusName,
-                usageName: req.body.usageName,
+                fundName: req.body.fundName,
+                locationName: req.body.locationName,
             };
             const payloadLog = generateLog(req.body, propertyLog);
             const resultInventory = yield inventory_service_1.inventoryService.create(payloadInventory, t);
@@ -160,8 +160,10 @@ function createInventoryController(req, res, next) {
             const resLog = resultLog.toJSON();
             res.json({
                 message: `เพิ่มครุภัณฑ์ ${code} สำเร็จ`,
-                inventory: resInventory,
-                log: resLog,
+                item: {
+                    inventory: resInventory,
+                    log: resLog,
+                },
             });
         }
         catch (error) {
@@ -197,14 +199,13 @@ function updateInventoryController(req, res, next) {
                 unit: req.body.unit,
                 value: value,
                 receivedDate: receivedDate,
-                fundingSource: req.body.fundingSource,
-                location: req.body.location,
                 remark: req.body.remark || '',
                 image: image || '',
                 userId: res.locals.userId,
                 categoryId: +req.body.categoryId,
                 statusId: +req.body.statusId,
-                usageId: +req.body.usageId,
+                fundId: +req.body.fundId,
+                locationId: +req.body.locationId,
             };
             const propertyLog = {
                 track: track,
@@ -216,7 +217,8 @@ function updateInventoryController(req, res, next) {
                 lastname: res.locals.user.lastname,
                 categoryName: req.body.categoryName,
                 statusName: req.body.statusName,
-                usageName: req.body.usageName,
+                fundName: req.body.fundName,
+                locationName: req.body.locationName,
             };
             const payloadLog = generateLog(req.body, propertyLog);
             const [result] = yield inventory_service_1.inventoryService.update(id, payloadInventory, t);
@@ -228,8 +230,10 @@ function updateInventoryController(req, res, next) {
             const resLog = resultLog.toJSON();
             res.json({
                 message: `แก้ไขครุภัณฑ์ ${code} สำเร็จ`,
-                inventory: resInventory,
-                log: resLog,
+                item: {
+                    inventory: resInventory,
+                    log: resLog,
+                },
             });
         }
         catch (error) {
@@ -246,7 +250,7 @@ function deleteInventoryController(req, res, next) {
             const id = +req.params.id;
             const inventory = yield inventory_service_1.inventoryService.findById(id);
             if (!inventory)
-                throw (0, helper_1.newError)(400, 'ไม่พบครุภัณฑ์');
+                throw (0, helper_1.newError)(400, 'ไม่พบ ครุภัณฑ์');
             const code = inventory.code;
             const result = yield inventory_service_1.inventoryService.delete(id);
             if (!result)
@@ -268,8 +272,6 @@ function generateLog(body, property) {
         unit: body.unit,
         value: property.value,
         receivedDate: property.receivedDate,
-        fundingSource: body.fundingSource,
-        location: body.location,
         remark: body.remark || '',
         image: property.image || '',
         isCreated: property.isCreated,
@@ -277,6 +279,7 @@ function generateLog(body, property) {
         lastname: property.lastname,
         categoryName: property.categoryName,
         statusName: property.statusName,
-        usageName: property.usageName,
+        fundName: property.fundName,
+        locationName: property.locationName,
     });
 }

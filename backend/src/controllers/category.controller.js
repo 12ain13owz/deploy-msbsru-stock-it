@@ -34,7 +34,7 @@ function createCategoryController(req, res, next) {
             const name = (0, helper_1.removeWhitespace)(req.body.name);
             const category = yield category_service_1.categoryService.findByName(name);
             if (category)
-                throw (0, helper_1.newError)(400, `ชื่อคุณสมบัติของครุภัณฑ์ ${name} ซ้ำ'`);
+                throw (0, helper_1.newError)(400, `ประเภท ${name} ซ้ำ'`);
             const payload = new category_model_1.Category({
                 name: name,
                 active: req.body.active,
@@ -43,8 +43,8 @@ function createCategoryController(req, res, next) {
             const result = yield category_service_1.categoryService.create(payload);
             const newCagegory = (0, lodash_1.omit)(result.toJSON(), helper_1.privateFields);
             res.json({
-                message: `เพิ่มประเภทพัสดุ ${name} สำเร็จ`,
-                category: newCagegory,
+                message: `เพิ่มประเภท ${name} สำเร็จ`,
+                item: newCagegory,
             });
         }
         catch (error) {
@@ -60,11 +60,11 @@ function updateCategoryController(req, res, next) {
             const id = +req.params.id;
             const cateogory = yield category_service_1.categoryService.findById(id);
             if (!cateogory)
-                throw (0, helper_1.newError)(400, 'ไม่พบคุณสมบัติของครุภัณฑ์');
+                throw (0, helper_1.newError)(400, 'ไม่พบประเภท');
             const name = (0, helper_1.removeWhitespace)(req.body.name);
             const existingCategory = yield category_service_1.categoryService.findByName(name);
             if (existingCategory && existingCategory.id !== id)
-                throw (0, helper_1.newError)(400, `ชื่อคุณสมบัติของครุภัณฑ์ ${name} ซ้ำ'`);
+                throw (0, helper_1.newError)(400, `ประเภท ${name} ซ้ำ'`);
             const payload = {
                 name: name,
                 active: req.body.active,
@@ -72,10 +72,10 @@ function updateCategoryController(req, res, next) {
             };
             const [result] = yield category_service_1.categoryService.update(id, payload);
             if (!result)
-                throw (0, helper_1.newError)(400, `แก้ไขคุณสมบัติ ${name} ไม่สำเร็จ`);
+                throw (0, helper_1.newError)(400, `แก้ไขประเภท ${name} ไม่สำเร็จ`);
             res.json({
-                message: `แก้ไขคุณสมบัติ ${name} สำเร็จ`,
-                category: payload,
+                message: `แก้ไขประเภท ${name} สำเร็จ`,
+                item: payload,
             });
         }
         catch (error) {
@@ -91,12 +91,12 @@ function deleteCategoryController(req, res, next) {
             const id = +req.params.id;
             const category = yield category_service_1.categoryService.findById(id);
             if (!category)
-                throw (0, helper_1.newError)(400, 'ไม่พบคุณสมบัติ (ยี่ห้อ/รุ่น)');
+                throw (0, helper_1.newError)(400, 'ไม่พบประเภท');
             const name = category.name;
             const result = yield category_service_1.categoryService.delete(id);
             if (!result)
-                throw (0, helper_1.newError)(400, `ลบคุณสมบัติ ${name} ไม่สำเร็จ`);
-            res.json({ message: `ลบคุณสมบัติ ${name} สำเร็จ` });
+                throw (0, helper_1.newError)(400, `ลบประเภท ${name} ไม่สำเร็จ`);
+            res.json({ message: `ลบประเภท ${name} สำเร็จ` });
         }
         catch (error) {
             next(error);

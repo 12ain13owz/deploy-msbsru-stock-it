@@ -34,7 +34,7 @@ function createStatusController(req, res, next) {
             const name = (0, helper_1.removeWhitespace)(req.body.name);
             const status = yield status_service_1.statusService.findByName(name);
             if (status)
-                throw (0, helper_1.newError)(400, `สถานะครุภัณฑ์ ${name} ซ้ำ`);
+                throw (0, helper_1.newError)(400, `สถานะ ${name} ซ้ำ`);
             const payload = new status_model_1.Status({
                 name: name,
                 active: req.body.active,
@@ -43,8 +43,8 @@ function createStatusController(req, res, next) {
             const result = yield status_service_1.statusService.create(payload);
             const newStatus = (0, lodash_1.omit)(result.toJSON(), helper_1.privateFields);
             res.json({
-                message: `เพิ่มสถานะครุภัณฑ์ ${name} สำเร็จ`,
-                status: newStatus,
+                message: `เพิ่มสถานะ ${name} สำเร็จ`,
+                item: newStatus,
             });
         }
         catch (error) {
@@ -58,10 +58,13 @@ function updateStatusController(req, res, next) {
         res.locals.func = 'updateStatusController';
         try {
             const id = +req.params.id;
+            const status = yield status_service_1.statusService.findById(id);
+            if (!status)
+                throw (0, helper_1.newError)(400, 'ไม่พบสถานะ');
             const name = (0, helper_1.removeWhitespace)(req.body.name);
             const existingStatus = yield status_service_1.statusService.findByName(name);
             if (existingStatus && existingStatus.id !== id)
-                throw (0, helper_1.newError)(400, `ชื่อสถานะครุภัณฑ์ ${name} ซ้ำ`);
+                throw (0, helper_1.newError)(400, `ชื่อสถานะ ${name} ซ้ำ`);
             const payload = {
                 name: name,
                 active: req.body.active,
@@ -69,10 +72,10 @@ function updateStatusController(req, res, next) {
             };
             const [result] = yield status_service_1.statusService.update(id, payload);
             if (!result)
-                throw (0, helper_1.newError)(400, `แก้ไขสถานะครุภัณฑ์ ${name} ไม่สำเร็จ`);
+                throw (0, helper_1.newError)(400, `แก้ไขสถานะ ${name} ไม่สำเร็จ`);
             res.json({
-                message: `แก้ไขสถานะครุภัณฑ์ ${name} สำเร็จ`,
-                status: payload,
+                message: `แก้ไขสถานะ ${name} สำเร็จ`,
+                item: payload,
             });
         }
         catch (error) {
@@ -88,12 +91,12 @@ function deleteStatusController(req, res, next) {
             const id = +req.params.id;
             const status = yield status_service_1.statusService.findById(id);
             if (!status)
-                throw (0, helper_1.newError)(400, 'ไม่พบสถานะครุภัณฑ์');
+                throw (0, helper_1.newError)(400, 'ไม่พบสถานะ');
             const name = status.name;
             const result = yield status_service_1.statusService.delete(id);
             if (!result)
-                throw (0, helper_1.newError)(400, `ลบสถานะครุภัณฑ์ ${name} ไม่สำเร็จ`);
-            res.json({ message: `ลบสถานะครุภัณฑ์ ${name} สำเร็จ` });
+                throw (0, helper_1.newError)(400, `ลบสถานะ ${name} ไม่สำเร็จ`);
+            res.json({ message: `ลบสถานะ ${name} สำเร็จ` });
         }
         catch (error) {
             next(error);

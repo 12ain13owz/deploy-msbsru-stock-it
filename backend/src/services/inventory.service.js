@@ -9,7 +9,8 @@ const inventory_model_1 = __importDefault(require("../models/inventory.model"));
 const user_model_1 = require("../models/user.model");
 const category_model_1 = require("../models/category.model");
 const status_model_1 = require("../models/status.model");
-const usage_model_1 = require("../models/usage.model");
+const fund_model_1 = require("../models/fund.model");
+const location_model_1 = require("../models/location.model");
 exports.inventoryService = {
     findAll() {
         return inventory_model_1.default.findAll(Object.assign({}, queryOptions()));
@@ -19,6 +20,17 @@ exports.inventoryService = {
     },
     findById(id) {
         return inventory_model_1.default.findByPk(id, Object.assign({}, queryOptions()));
+    },
+    findByIdDetails(id) {
+        return inventory_model_1.default.findByPk(id, {
+            include: [
+                { model: user_model_1.User, attributes: ['firstname', 'lastname'] },
+                { model: category_model_1.Category, attributes: ['id', 'name'] },
+                { model: status_model_1.Status, attributes: ['id', 'name'] },
+                { model: fund_model_1.Fund, attributes: ['id', 'name'] },
+                { model: location_model_1.Location, attributes: ['id', 'name'] },
+            ],
+        });
     },
     findByTrack(track) {
         return inventory_model_1.default.findOne(Object.assign({ where: { track } }, queryOptions()));
@@ -47,13 +59,14 @@ exports.inventoryService = {
 function queryOptions() {
     return {
         attributes: {
-            exclude: ['userId', 'categoryId', 'statusId', 'usageId'],
+            exclude: ['userId', 'categoryId', 'statusId', 'fundId', 'locationId'],
         },
         include: [
             { model: user_model_1.User, attributes: ['firstname', 'lastname'] },
             { model: category_model_1.Category, attributes: ['id', 'name'] },
             { model: status_model_1.Status, attributes: ['id', 'name'] },
-            { model: usage_model_1.Usage, attributes: ['id', 'name'] },
+            { model: fund_model_1.Fund, attributes: ['id', 'name'] },
+            { model: location_model_1.Location, attributes: ['id', 'name'] },
         ],
     };
 }

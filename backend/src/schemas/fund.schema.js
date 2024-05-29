@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.statusSchema = void 0;
+exports.fundSchema = void 0;
 const zod_1 = require("zod");
 const regexId = new RegExp(/^[0-9]\d*$/);
-const id = 'ไม่พบสถานะ';
-const name = 'ไม่พบสถานะ';
+const id = 'ไม่พบแหล่งเงิน';
+const name = 'ไม่พบแหล่งเงิน';
 const active = 'ไม่พบสถานะการใช้งาน';
-exports.statusSchema = {
+exports.fundSchema = {
     create: (0, zod_1.object)({
         body: (0, zod_1.object)({
             name: (0, zod_1.string)({ required_error: name }).min(1, {

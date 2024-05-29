@@ -9,7 +9,8 @@ const inventory_model_1 = require("../models/inventory.model");
 const user_model_1 = require("../models/user.model");
 const category_model_1 = require("../models/category.model");
 const status_model_1 = require("../models/status.model");
-const usage_model_1 = require("../models/usage.model");
+const fund_model_1 = require("../models/fund.model");
+const location_model_1 = require("../models/location.model");
 exports.inventoryCheckService = {
     findAll() {
         return inventory_check_model_1.default.findAll(Object.assign({}, queryOptions()));
@@ -39,13 +40,14 @@ function queryOptions() {
             {
                 model: inventory_model_1.Inventory,
                 attributes: {
-                    exclude: ['userId', 'categoryId', 'statusId', 'usageId'],
+                    exclude: ['userId', 'categoryId', 'statusId', 'fundId', 'locationId'],
                 },
                 include: [
                     { model: user_model_1.User, attributes: ['firstname', 'lastname'] },
                     { model: category_model_1.Category, attributes: ['name'] },
                     { model: status_model_1.Status, attributes: ['name'] },
-                    { model: usage_model_1.Usage, attributes: ['name'] },
+                    { model: fund_model_1.Fund, attributes: ['name'] },
+                    { model: location_model_1.Location, attributes: ['name'] },
                 ],
             },
         ],

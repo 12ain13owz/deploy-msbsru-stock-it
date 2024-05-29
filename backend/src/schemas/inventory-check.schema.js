@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.inventoryCheckSehema = void 0;
 const zod_1 = require("zod");
 const regexNumber = new RegExp(/^[0-9]\d*$/);
-const id = 'ไม่พบข้อมูลที่ต้องการตรวจสอบ';
-const year = 'ไม่พบปีที่ต้องการค้นหา';
+const id = 'ไม่พบ ข้อมูลที่ต้องการตรวจสอบ';
+const year = 'ไม่พบ ปีที่ต้องการค้นหา';
 const inventoryId = 'ไม่พบครุภัณฑ์';
+const inventoryStatus = 'ไม่พบสถานะครุภัณฑ์';
 exports.inventoryCheckSehema = {
     findByYear: (0, zod_1.object)({
         params: (0, zod_1.object)({
@@ -25,6 +26,12 @@ exports.inventoryCheckSehema = {
         body: (0, zod_1.object)({
             inventoryId: (0, zod_1.number)({ required_error: inventoryId }).min(1, {
                 message: inventoryId,
+            }),
+            inventoryStatusId: (0, zod_1.number)({ required_error: inventoryStatus }).min(1, {
+                message: inventoryStatus,
+            }),
+            inventoryStatusName: (0, zod_1.string)({ required_error: inventoryStatus }).min(1, {
+                message: inventoryStatus,
             }),
         }),
     }),

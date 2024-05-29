@@ -18,8 +18,6 @@ exports.default = Log.init({
     unit: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     value: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
     receivedDate: { type: sequelize_1.DataTypes.DATEONLY, allowNull: false },
-    fundingSource: { type: sequelize_1.DataTypes.STRING, allowNull: false },
-    location: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     remark: { type: sequelize_1.DataTypes.TEXT },
     image: { type: sequelize_1.DataTypes.TEXT },
     isCreated: { type: sequelize_1.DataTypes.BOOLEAN, allowNull: false },
@@ -27,10 +25,11 @@ exports.default = Log.init({
     lastname: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     categoryName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     statusName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
-    usageName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    fundName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    locationName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: true,
+        allowNull: false,
         defaultValue: sequelize_1.DataTypes.NOW,
     },
 }, {
