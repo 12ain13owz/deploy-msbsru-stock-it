@@ -73,7 +73,6 @@ function createInventoryCheckController(req, res, next) {
             if (!inventory)
                 throw (0, helper_1.newError)(404, 'ไม่พบครุภัณฑ์');
             if (inventory.statusId !== inventoryStatusId) {
-                console.log(inventory.statusId, inventoryStatusId);
                 const payloadInventory = {
                     statusId: inventoryStatusId,
                 };
@@ -108,9 +107,9 @@ function createInventoryCheckController(req, res, next) {
                 });
             }
             const payload = new inventory_check_model_1.InventoryCheck({ inventoryId, year: currentYear });
-            const result = yield inventory_check_service_1.inventoryCheckService.create(payload);
-            const resInvenroryCheck = yield inventory_check_service_1.inventoryCheckService.findById(result.id);
+            const result = yield inventory_check_service_1.inventoryCheckService.create(payload, t);
             yield t.commit();
+            const resInvenroryCheck = yield inventory_check_service_1.inventoryCheckService.findById(result.id);
             res.json({
                 message: 'ตรวจสอบครุภัณฑ์ สำเร็จ',
                 item: resInvenroryCheck,

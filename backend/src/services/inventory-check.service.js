@@ -27,8 +27,10 @@ exports.inventoryCheckService = {
                 year: year,
             } }, queryOptions()));
     },
-    create(inventoryCheck) {
-        return inventory_check_model_1.default.create(inventoryCheck.toJSON());
+    create(inventoryCheck, t) {
+        return inventory_check_model_1.default.create(inventoryCheck.toJSON(), {
+            transaction: t,
+        });
     },
 };
 function queryOptions() {
