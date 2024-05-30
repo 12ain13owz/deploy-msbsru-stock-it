@@ -42,4 +42,4 @@ ENV DATABASE_URL="/app/data/database/ms_inventory.sqlite"
 CMD [ "npm", "run", "start" ]
 
 # Run Test
-# docker run -d -p 3000:3000 -v data/database:/app/data/database -v data/images:/app/images --name test test
+# docker run -d -p 3000:3000 -v data\database:/app/data/database -v data\images:/app/data/images --name ms-inventory ms-inventory

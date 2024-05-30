@@ -30,6 +30,7 @@ const socket_1 = __importDefault(require("./socket"));
 const fs_1 = require("fs");
 const app = (0, express_1.default)();
 const node_env = config_1.default.get('node_env');
+const port = config_1.default.get('port');
 const getCorsOptions = (env) => {
     if (env === 'production')
         return {
@@ -40,6 +41,7 @@ const getCorsOptions = (env) => {
     else
         return {
             origin: [
+                'https://localhost:' + port.toString(),
                 'http://localhost:4200',
                 'https://localhost:4200',
                 'http://192.168.1.33:4200',
@@ -60,7 +62,6 @@ const socketOptions = {
     cors: { origin: corsOptions.origin },
 };
 const io = new socket_io_1.Server(server, socketOptions);
-const port = config_1.default.get('port');
 (0, socket_1.default)(io);
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, morgan_1.default)('dev'));
