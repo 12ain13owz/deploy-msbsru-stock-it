@@ -32,6 +32,9 @@ exports.inventoryCheckService = {
             transaction: t,
         });
     },
+    delete(id) {
+        return inventory_check_model_1.default.destroy({ where: { id } });
+    },
 };
 function queryOptions() {
     return {

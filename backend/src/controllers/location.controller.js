@@ -91,7 +91,7 @@ function deleteLocationController(req, res, next) {
             const id = +req.params.id;
             const location = yield location_service_1.locationService.findById(id);
             if (!location)
-                throw (0, helper_1.newError)(400, 'ไม่พบห้อง');
+                throw (0, helper_1.newError)(400, 'ไม่พบห้อง ที่ต้องการลบ');
             const name = location.name;
             const result = yield location_service_1.locationService.delete(id);
             if (!result)

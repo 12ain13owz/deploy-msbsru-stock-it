@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInventoryCheckController = exports.findInventoryCheckByIdController = exports.findInventoryCheckByYearController = exports.findAllInventoryCheckController = void 0;
+exports.deleteInventoryCheckController = exports.createInventoryCheckController = exports.findInventoryCheckByIdController = exports.findInventoryCheckByYearController = exports.findAllInventoryCheckController = void 0;
 const inventory_check_service_1 = require("../services/inventory-check.service");
 const inventory_check_model_1 = require("../models/inventory-check.model");
 const inventory_service_1 = require("../services/inventory.service");
@@ -66,15 +66,16 @@ function createInventoryCheckController(req, res, next) {
         res.locals.func = 'createInventoryCheckController';
         const t = yield sequelize_1.default.transaction();
         try {
-            const { inventoryId, inventoryStatusId, inventoryStatusName } = req.body;
+            const { inventoryId, statusId, statusName } = req.body;
             const currentYear = new Date().getFullYear();
             const inventoryCheck = yield inventory_check_service_1.inventoryCheckService.findByInventoryId(inventoryId, currentYear);
             const inventory = yield inventory_service_1.inventoryService.findByIdDetails(inventoryId);
             if (!inventory)
                 throw (0, helper_1.newError)(404, 'ไม่พบครุภัณฑ์');
-            if (inventory.statusId !== inventoryStatusId) {
+            let resLog;
+            if (inventory.statusId !== statusId) {
                 const payloadInventory = {
-                    statusId: inventoryStatusId,
+                    statusId: statusId,
                 };
                 const payloadLog = new log_model_1.Log({
                     track: inventory.track,
@@ -90,20 +91,24 @@ function createInventoryCheckController(req, res, next) {
                     firstname: res.locals.user.firstname,
                     lastname: res.locals.user.lastname,
                     categoryName: inventory.Category.name,
-                    statusName: inventoryStatusName,
+                    statusName: statusName,
                     fundName: inventory.Fund.name,
                     locationName: inventory.Location.name,
                 });
                 const [result] = yield inventory_service_1.inventoryService.update(inventoryId, payloadInventory, t);
                 if (!result)
                     throw (0, helper_1.newError)(400, `แก้ไขครุภัณฑ์ ${inventory.code} ไม่สำเร็จ`);
-                yield log_service_1.logService.create(payloadLog, t);
+                const resultLog = yield log_service_1.logService.create(payloadLog, t);
+                resLog = resultLog.toJSON();
             }
             if (inventoryCheck) {
                 yield t.commit();
                 return res.json({
                     message: 'ตรวจสอบครุภัณฑ์ สำเร็จ',
-                    item: inventoryCheck.toJSON(),
+                    item: {
+                        inventoryCheck: inventoryCheck.toJSON(),
+                        log: resLog,
+                    },
                 });
             }
             const payload = new inventory_check_model_1.InventoryCheck({ inventoryId, year: currentYear });
@@ -112,7 +117,10 @@ function createInventoryCheckController(req, res, next) {
             const resInvenroryCheck = yield inventory_check_service_1.inventoryCheckService.findById(result.id);
             res.json({
                 message: 'ตรวจสอบครุภัณฑ์ สำเร็จ',
-                item: resInvenroryCheck,
+                item: {
+                    inventoryCheck: resInvenroryCheck,
+                    log: resLog,
+                },
             });
         }
         catch (error) {
@@ -122,3 +130,23 @@ function createInventoryCheckController(req, res, next) {
     });
 }
 exports.createInventoryCheckController = createInventoryCheckController;
+function deleteInventoryCheckController(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'deleteInventoryCheckController';
+        try {
+            const id = +req.params.id;
+            const inventoryCheck = yield inventory_check_service_1.inventoryCheckService.findById(id);
+            if (!inventoryCheck)
+                throw (0, helper_1.newError)(400, 'ไม่พบตรวจสอบครุภัณฑ์ ที่ต้องการลบ');
+            const code = inventoryCheck.Inventory.code;
+            const result = yield inventory_check_service_1.inventoryCheckService.delete(id);
+            if (!result)
+                throw (0, helper_1.newError)(400, `ลบตรวจสอบครุภัณฑ์รหัส ${code} ไม่สำเร็จ`);
+            res.json({ message: `ลบตรวจสอบครุภัณฑ์รหัส ${code} สำเร็จ` });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
+exports.deleteInventoryCheckController = deleteInventoryCheckController;

@@ -91,7 +91,7 @@ function deleteFundController(req, res, next) {
             const id = +req.params.id;
             const fund = yield fund_service_1.fundService.findById(id);
             if (!fund)
-                throw (0, helper_1.newError)(400, 'ไม่พบแหล่งเงิน');
+                throw (0, helper_1.newError)(400, 'ไม่พบแหล่งเงิน ที่ต้องการลบ');
             const name = fund.name;
             const result = yield fund_service_1.fundService.delete(id);
             if (!result)

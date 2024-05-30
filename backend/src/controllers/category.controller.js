@@ -91,7 +91,7 @@ function deleteCategoryController(req, res, next) {
             const id = +req.params.id;
             const category = yield category_service_1.categoryService.findById(id);
             if (!category)
-                throw (0, helper_1.newError)(400, 'ไม่พบประเภท');
+                throw (0, helper_1.newError)(400, 'ไม่พบประเภท ที่ต้องการลบ');
             const name = category.name;
             const result = yield category_service_1.categoryService.delete(id);
             if (!result)

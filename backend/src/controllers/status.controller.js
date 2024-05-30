@@ -91,7 +91,7 @@ function deleteStatusController(req, res, next) {
             const id = +req.params.id;
             const status = yield status_service_1.statusService.findById(id);
             if (!status)
-                throw (0, helper_1.newError)(400, 'ไม่พบสถานะ');
+                throw (0, helper_1.newError)(400, 'ไม่พบสถานะ ที่ต้องการลบ');
             const name = status.name;
             const result = yield status_service_1.statusService.delete(id);
             if (!result)

@@ -27,12 +27,19 @@ exports.inventoryCheckSehema = {
             inventoryId: (0, zod_1.number)({ required_error: inventoryId }).min(1, {
                 message: inventoryId,
             }),
-            inventoryStatusId: (0, zod_1.number)({ required_error: inventoryStatus }).min(1, {
+            statusId: (0, zod_1.number)({ required_error: inventoryStatus }).min(1, {
                 message: inventoryStatus,
             }),
-            inventoryStatusName: (0, zod_1.string)({ required_error: inventoryStatus }).min(1, {
+            statusName: (0, zod_1.string)({ required_error: inventoryStatus }).min(1, {
                 message: inventoryStatus,
             }),
+        }),
+    }),
+    delete: (0, zod_1.object)({
+        params: (0, zod_1.object)({
+            id: (0, zod_1.string)({ required_error: id })
+                .min(1, { message: id })
+                .regex(regexNumber, { message: id }),
         }),
     }),
 };
