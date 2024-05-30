@@ -29,34 +29,33 @@ const logger_1 = __importDefault(require("./utils/logger"));
 const socket_1 = __importDefault(require("./socket"));
 const fs_1 = require("fs");
 const app = (0, express_1.default)();
-let corsOptions;
-let server;
 const node_env = config_1.default.get('node_env');
-if (node_env === 'production') {
-    server = (0, node_http_1.createServer)(app);
-    corsOptions = {
-        origin: ['https://ms-stock-it.web.app'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-    };
-}
-else {
-    const httpsOptions = {
+const getCorsOptions = (env) => {
+    if (env === 'production')
+        return {
+            origin: ['https://ms-stock-it.web.app'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+            credentials: true,
+        };
+    else
+        return {
+            origin: [
+                'http://localhost:4200',
+                'https://localhost:4200',
+                'http://192.168.1.33:4200',
+                'https://192.168.1.33:4200',
+            ],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+            credentials: true,
+        };
+};
+const corsOptions = getCorsOptions(node_env);
+const server = node_env === 'production'
+    ? (0, node_http_1.createServer)(app)
+    : https_1.default.createServer({
         key: (0, fs_1.readFileSync)(path_1.default.join('ssl_private.key')),
         cert: (0, fs_1.readFileSync)(path_1.default.join('ssl.crt')),
-    };
-    server = https_1.default.createServer(httpsOptions, app);
-    corsOptions = {
-        origin: [
-            'http://localhost:4200',
-            'https://localhost:4200',
-            'http://192.168.1.33:4200',
-            'https://192.168.1.33:4200',
-        ],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-    };
-}
+    }, app);
 const socketOptions = {
     cors: { origin: corsOptions.origin },
 };
@@ -72,9 +71,11 @@ app.use('/images', express_1.default.static(path_1.default.join(__dirname, '../d
 app.use(health_1.default);
 app.use(index_1.default);
 app.use(error_handler_middleware_1.default);
-app.get('*.*', express_1.default.static(path_1.default.join(__dirname, '../browser')));
+const staticPath = node_env === 'production' ? '../browser' : '../browser-dev';
+const rootPath = node_env === 'production' ? 'browser' : 'browser-dev';
+app.get('*.*', express_1.default.static(path_1.default.join(__dirname, staticPath)));
 app.all('*', (req, res) => {
-    res.status(200).sendFile('/', { root: 'browser' });
+    res.status(200).sendFile('/', { root: rootPath });
 });
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, connect_1.databaseConnect)();
