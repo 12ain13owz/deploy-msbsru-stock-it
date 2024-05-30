@@ -35389,7 +35389,7 @@ _ToolbarComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
     \u0275\u0275text(33, "logout");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(34, "span", 13);
-    \u0275\u0275text(35, "\u0E2D\u0E2D\u0E01\u0E08\u0E01\u0E32\u0E23\u0E30\u0E1A\u0E1A");
+    \u0275\u0275text(35, "\u0E2D\u0E2D\u0E01\u0E08\u0E32\u0E01\u0E23\u0E30\u0E1A\u0E1A");
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
@@ -35665,7 +35665,7 @@ _DashboardComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ ty
     \u0275\u0275property("mode", \u0275\u0275pipeBind1(3, 3, ctx.isHandset$) ? "over" : "side")("opened", \u0275\u0275pipeBind1(4, 5, ctx.isHandset$) === false);
     \u0275\u0275attribute("role", \u0275\u0275pipeBind1(5, 7, ctx.isHandset$) ? "dialog" : "navigation");
   }
-}, dependencies: [RouterOutlet, MatSidenav, MatSidenavContainer, MatSidenavContent, ToolbarComponent, SidenavComponent, AsyncPipe], styles: ["\n\n.sidenav-container[_ngcontent-%COMP%] {\n  height: 100%;\n}\n.sidenav[_ngcontent-%COMP%] {\n  width: 200px;\n}\n.sidenav[_ngcontent-%COMP%]   .mat-toolbar[_ngcontent-%COMP%] {\n  background: inherit;\n}\n.mat-toolbar.mat-primary[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\nmain[_ngcontent-%COMP%] {\n  margin: 15px;\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] });
+}, dependencies: [RouterOutlet, MatSidenav, MatSidenavContainer, MatSidenavContent, ToolbarComponent, SidenavComponent, AsyncPipe], styles: ["\n\n.sidenav-container[_ngcontent-%COMP%] {\n  height: 100%;\n}\n.sidenav[_ngcontent-%COMP%] {\n  width: 200px;\n}\n.sidenav[_ngcontent-%COMP%]   .mat-toolbar[_ngcontent-%COMP%] {\n  background: inherit;\n}\n.mat-toolbar.mat-primary[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\nmain[_ngcontent-%COMP%] {\n  margin: 15px;\n  min-height: 100dvh;\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] });
 var DashboardComponent = _DashboardComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src\\app\\modules\\dashboard\\dashboard.component.ts", lineNumber: 14 });
@@ -44346,7 +44346,12 @@ var _InventoryApiService = class _InventoryApiService {
     return this.http.get(`${this.apiUrl}/id/${id}`);
   }
   getByCode(code) {
-    return this.http.get(`${this.apiUrl}/code/${code}`).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => this.inventoryService.assign([res])));
+    return this.http.get(`${this.apiUrl}/code/${code}`).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => {
+      if (res)
+        this.inventoryService.assign([res]);
+      else
+        this.inventoryService.assign([]);
+    }));
   }
   create(payload) {
     return this.http.post(this.apiUrl, payload).pipe(tap((res) => {
@@ -44863,9 +44868,7 @@ var _InventoryListComponent = class _InventoryListComponent {
       if (!code)
         return;
       const inventory = this.inventoryService.getTableDataWithCode(code);
-      if (this.validationService.isEmpty(inventory))
-        this.operation$ = this.inventoryApiService.getByCode(code);
-      else {
+      if (!this.validationService.isEmpty(inventory)) {
         this.dataSource.data = inventory;
         return;
       }
@@ -57806,4 +57809,4 @@ jspdf/dist/jspdf.es.min.js:
    * http://opensource.org/licenses/mit-license
    *)
 */
-//# sourceMappingURL=chunk-3ODQIWAL.js.map
+//# sourceMappingURL=chunk-JX7TNJ4R.js.map
