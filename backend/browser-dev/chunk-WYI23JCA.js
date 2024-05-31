@@ -35665,7 +35665,7 @@ _DashboardComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ ty
     \u0275\u0275property("mode", \u0275\u0275pipeBind1(3, 3, ctx.isHandset$) ? "over" : "side")("opened", \u0275\u0275pipeBind1(4, 5, ctx.isHandset$) === false);
     \u0275\u0275attribute("role", \u0275\u0275pipeBind1(5, 7, ctx.isHandset$) ? "dialog" : "navigation");
   }
-}, dependencies: [RouterOutlet, MatSidenav, MatSidenavContainer, MatSidenavContent, ToolbarComponent, SidenavComponent, AsyncPipe], styles: ["\n\n.sidenav-container[_ngcontent-%COMP%] {\n  height: 100%;\n}\n.sidenav[_ngcontent-%COMP%] {\n  width: 200px;\n}\n.sidenav[_ngcontent-%COMP%]   .mat-toolbar[_ngcontent-%COMP%] {\n  background: inherit;\n}\n.mat-toolbar.mat-primary[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\nmain[_ngcontent-%COMP%] {\n  margin: 15px;\n  min-height: 100dvh;\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] });
+}, dependencies: [RouterOutlet, MatSidenav, MatSidenavContainer, MatSidenavContent, ToolbarComponent, SidenavComponent, AsyncPipe], styles: ["\n\n.sidenav-container[_ngcontent-%COMP%] {\n  height: 100%;\n}\n.sidenav[_ngcontent-%COMP%] {\n  width: 200px;\n}\n.sidenav[_ngcontent-%COMP%]   .mat-toolbar[_ngcontent-%COMP%] {\n  background: inherit;\n}\n.mat-toolbar.mat-primary[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\nmain[_ngcontent-%COMP%] {\n  margin: 15px;\n  min-height: calc(100vh - 100px);\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] });
 var DashboardComponent = _DashboardComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src\\app\\modules\\dashboard\\dashboard.component.ts", lineNumber: 14 });
@@ -40240,13 +40240,20 @@ var ScanComponent = _ScanComponent;
 
 // src/app/modules/dashboard/components/log/log.component.ts
 var _LogComponent = class _LogComponent {
+  onRouterActive() {
+    window.scrollTo(0, 0);
+  }
 };
 _LogComponent.\u0275fac = function LogComponent_Factory(t2) {
   return new (t2 || _LogComponent)();
 };
-_LogComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _LogComponent, selectors: [["app-log"]], decls: 1, vars: 0, template: function LogComponent_Template(rf, ctx) {
+_LogComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _LogComponent, selectors: [["app-log"]], decls: 1, vars: 0, consts: [[3, "activate"]], template: function LogComponent_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "router-outlet");
+    \u0275\u0275elementStart(0, "router-outlet", 0);
+    \u0275\u0275listener("activate", function LogComponent_Template_router_outlet_activate_0_listener() {
+      return ctx.onRouterActive();
+    });
+    \u0275\u0275elementEnd();
   }
 }, dependencies: [RouterOutlet] });
 var LogComponent = _LogComponent;
@@ -44309,13 +44316,20 @@ var _InventoryComponent = class _InventoryComponent {
     else
       this.inventoryService.setIsLoading(false);
   }
+  onRouterActive() {
+    window.scrollTo(0, 0);
+  }
 };
 _InventoryComponent.\u0275fac = function InventoryComponent_Factory(t2) {
   return new (t2 || _InventoryComponent)();
 };
-_InventoryComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _InventoryComponent, selectors: [["app-inventory"]], decls: 1, vars: 0, template: function InventoryComponent_Template(rf, ctx) {
+_InventoryComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _InventoryComponent, selectors: [["app-inventory"]], decls: 1, vars: 0, consts: [[3, "activate"]], template: function InventoryComponent_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "router-outlet");
+    \u0275\u0275elementStart(0, "router-outlet", 0);
+    \u0275\u0275listener("activate", function InventoryComponent_Template_router_outlet_activate_0_listener() {
+      return ctx.onRouterActive();
+    });
+    \u0275\u0275elementEnd();
   }
 }, dependencies: [RouterOutlet] });
 var InventoryComponent = _InventoryComponent;
@@ -57809,4 +57823,4 @@ jspdf/dist/jspdf.es.min.js:
    * http://opensource.org/licenses/mit-license
    *)
 */
-//# sourceMappingURL=chunk-I4P6VGDD.js.map
+//# sourceMappingURL=chunk-WYI23JCA.js.map
