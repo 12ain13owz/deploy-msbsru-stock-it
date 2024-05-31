@@ -40732,7 +40732,7 @@ function UserComponent_Defer_3_mat_cell_21_Template(rf, ctx) {
 function UserComponent_Defer_3_mat_header_cell_23_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 20);
-    \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
+    \u0275\u0275text(1, "\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E02\u0E49\u0E07\u0E32\u0E19");
     \u0275\u0275elementEnd();
   }
 }
@@ -40974,7 +40974,7 @@ _UserComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _
     \u0275\u0275advance(5);
     \u0275\u0275deferWhen(ctx.dataSource.data.length > 0 || ctx.isFirstLoading);
   }
-}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-email[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-role[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 100px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n/*# sourceMappingURL=user.component.css.map */"] });
+}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-email[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-role[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 100px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n/*# sourceMappingURL=user.component.css.map */"] });
 var UserComponent = _UserComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(UserComponent, { className: "UserComponent", filePath: "src\\app\\modules\\dashboard\\components\\user\\user.component.ts", lineNumber: 27 });
@@ -41249,7 +41249,7 @@ function CategoryComponent_Defer_3_mat_cell_15_Template(rf, ctx) {
 function CategoryComponent_Defer_3_mat_header_cell_17_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 19);
-    \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
+    \u0275\u0275text(1, "\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E0A\u0E49\u0E07\u0E32\u0E19");
     \u0275\u0275elementEnd();
   }
 }
@@ -41490,7 +41490,7 @@ _CategoryComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ typ
     \u0275\u0275advance(2);
     \u0275\u0275property("icon", "error");
   }
-}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
+}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
 var CategoryComponent = _CategoryComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CategoryComponent, { className: "CategoryComponent", filePath: "src\\app\\modules\\dashboard\\components\\category\\category.component.ts", lineNumber: 31 });
@@ -43548,7 +43548,7 @@ function StatusComponent_Defer_3_mat_cell_15_Template(rf, ctx) {
 function StatusComponent_Defer_3_mat_header_cell_17_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 19);
-    \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
+    \u0275\u0275text(1, "\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E0A\u0E49\u0E07\u0E32\u0E19");
     \u0275\u0275elementEnd();
   }
 }
@@ -43789,7 +43789,7 @@ _StatusComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type:
     \u0275\u0275advance(2);
     \u0275\u0275property("icon", "error");
   }
-}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
+}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
 var StatusComponent = _StatusComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatusComponent, { className: "StatusComponent", filePath: "src\\app\\modules\\dashboard\\components\\status\\status.component.ts", lineNumber: 31 });
@@ -44028,7 +44028,7 @@ function FundComponent_Defer_3_mat_cell_15_Template(rf, ctx) {
 function FundComponent_Defer_3_mat_header_cell_17_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 19);
-    \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
+    \u0275\u0275text(1, "\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E0A\u0E49\u0E07\u0E32\u0E19");
     \u0275\u0275elementEnd();
   }
 }
@@ -44269,7 +44269,7 @@ _FundComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _
     \u0275\u0275advance(2);
     \u0275\u0275property("icon", "error");
   }
-}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
+}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
 var FundComponent = _FundComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(FundComponent, { className: "FundComponent", filePath: "src\\app\\modules\\dashboard\\components\\fund\\fund.component.ts", lineNumber: 31 });
@@ -57280,7 +57280,7 @@ function LocationComponent_Defer_3_mat_cell_15_Template(rf, ctx) {
 function LocationComponent_Defer_3_mat_header_cell_17_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 19);
-    \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
+    \u0275\u0275text(1, "\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E02\u0E49\u0E07\u0E32\u0E19");
     \u0275\u0275elementEnd();
   }
 }
@@ -57521,7 +57521,7 @@ _LocationComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ typ
     \u0275\u0275advance(2);
     \u0275\u0275property("icon", "error");
   }
-}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
+}, dependencies: [MatFabButton, MatIcon, LoadingDataComponent, SweetAlertComponent], styles: ["\n\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-name[_ngcontent-%COMP%] {\n  min-width: 120px;\n}\n.mat-column-active[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-remark[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  justify-content: center;\n}\n/*# sourceMappingURL=table-styles.css.map */"] });
 var LocationComponent = _LocationComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(LocationComponent, { className: "LocationComponent", filePath: "src\\app\\modules\\dashboard\\components\\location\\location.component.ts", lineNumber: 31 });
@@ -57809,4 +57809,4 @@ jspdf/dist/jspdf.es.min.js:
    * http://opensource.org/licenses/mit-license
    *)
 */
-//# sourceMappingURL=chunk-JX7TNJ4R.js.map
+//# sourceMappingURL=chunk-QHAM5GUV.js.map
