@@ -44753,7 +44753,7 @@ function InventoryListComponent_Defer_38_Template(rf, ctx) {
       const ctx_r3 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r3.addToPrint());
     });
-    \u0275\u0275text(34, " \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E1E\u0E31\u0E2A\u0E14\u0E38\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A\u0E1B\u0E23\u0E34\u0E49\u0E19 ");
+    \u0275\u0275text(34, " \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E44\u0E1B\u0E22\u0E31\u0E07\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E1E\u0E34\u0E21\u0E1E\u0E4C ");
     \u0275\u0275elementEnd()();
     \u0275\u0275template(35, InventoryListComponent_Defer_38_Conditional_35_Template, 26, 4, "mat-table", 35)(36, InventoryListComponent_Defer_38_Conditional_36_Template, 1, 1);
     \u0275\u0275element(37, "mat-paginator", 36);
@@ -56080,7 +56080,7 @@ var _c111 = ["downloadElement"];
 function PrintProcessComponent_Conditional_0_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "button", 3);
-    \u0275\u0275text(1, " \u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A\u0E1E\u0E34\u0E21\u0E1E\u0E4C\n");
+    \u0275\u0275text(1, " \u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E1E\u0E34\u0E21\u0E1E\u0E4C\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C\n");
     \u0275\u0275elementEnd();
   }
 }
@@ -57809,4 +57809,4 @@ jspdf/dist/jspdf.es.min.js:
    * http://opensource.org/licenses/mit-license
    *)
 */
-//# sourceMappingURL=chunk-QHAM5GUV.js.map
+//# sourceMappingURL=chunk-I4P6VGDD.js.map
