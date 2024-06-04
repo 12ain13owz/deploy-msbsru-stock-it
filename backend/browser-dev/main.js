@@ -76,7 +76,7 @@ import {
   ɵɵproperty,
   ɵɵtemplate,
   ɵɵtext
-} from "./chunk-6MQHRHGT.js";
+} from "./chunk-5XPFCMCB.js";
 import {
   __objRest,
   __spreadValues
@@ -164,11 +164,11 @@ var ServerErrorComponent = _ServerErrorComponent;
 var routes = [
   {
     path: "",
-    loadChildren: () => import("./chunk-WYI23JCA.js").then((m) => m.DashboardModule)
+    loadChildren: () => import("./chunk-3AH36R3Q.js").then((m) => m.DashboardModule)
   },
   {
     path: "login",
-    loadChildren: () => import("./chunk-CIJWDM6C.js").then((m) => m.AuthModule)
+    loadChildren: () => import("./chunk-TWAWN6UB.js").then((m) => m.AuthModule)
   },
   { path: "error", component: ServerErrorComponent },
   { path: "**", component: PageNotFoundComponent }

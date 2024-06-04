@@ -33,7 +33,7 @@ function loginController(req, res, next) {
             if (!isValidPassword)
                 throw (0, helper_1.newError)(401, 'E-mail หรือ Password ไม่ตรงกัน');
             if (!user.active)
-                throw (0, helper_1.newError)(401, `E-mail: ${email} นี้ไม่ได้รับอนุญาติให้ใช้งาน`);
+                throw (0, helper_1.newError)(401, `${email} บัญชีนี้ถูกระงับการใช้งาน`);
             const accessToken = (0, jwt_1.signAccessToken)(user.id);
             const refreshToken = (0, jwt_1.signRefreshToken)(user.id);
             if (!accessToken || !refreshToken)

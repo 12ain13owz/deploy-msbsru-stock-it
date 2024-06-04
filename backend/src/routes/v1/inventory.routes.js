@@ -8,6 +8,7 @@ const inventory_schema_1 = require("../../schemas/inventory.schema");
 const file_middlerware_1 = require("../../middlewares/file.middlerware");
 const check_active_middleware_1 = require("../../middlewares/check-active.middleware");
 const router = (0, express_1.Router)();
+router.get('/search', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], inventory_controller_1.searchInventoryController);
 router.get('/', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], inventory_controller_1.findAllInventoryController);
 router.get('/init', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive], inventory_controller_1.initialInventoryController);
 router.get('/date/:dateStart/:dateEnd', [auth_middleware_1.verifyToken, auth_middleware_1.isUserActive, (0, validate_middleware_1.validate)(inventory_schema_1.inventorySchema.findByDate)], inventory_controller_1.findInventoryByDateController);

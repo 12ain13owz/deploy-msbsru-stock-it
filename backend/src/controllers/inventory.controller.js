@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteInventoryController = exports.updateInventoryController = exports.createInventoryController = exports.findInventoryByCodeController = exports.findInventoryByIdController = exports.findInventoryByTrackController = exports.findInventoryByDateController = exports.initialInventoryController = exports.findAllInventoryController = void 0;
+exports.deleteInventoryController = exports.updateInventoryController = exports.createInventoryController = exports.findInventoryByCodeController = exports.findInventoryByIdController = exports.findInventoryByTrackController = exports.findInventoryByDateController = exports.initialInventoryController = exports.findAllInventoryController = exports.searchInventoryController = void 0;
 const inventory_service_1 = require("../services/inventory.service");
 const helper_1 = require("../utils/helper");
 const sequelize_1 = __importDefault(require("../utils/sequelize"));
@@ -21,6 +21,27 @@ const track_service_1 = require("../services/track.service");
 const log_service_1 = require("../services/log.service");
 const inventory_model_1 = require("../models/inventory.model");
 const log_model_1 = require("../models/log.model");
+let cache = [];
+function searchInventoryController(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'searchInventoryController';
+        try {
+            const query = req.query.code.toLocaleLowerCase();
+            const inventories = cache.filter((item) => item.includes(query));
+            if (inventories.length > 0)
+                return res.json(inventories);
+            const result = yield inventory_service_1.inventoryService.search(query);
+            const records = result.map((item) => item.code);
+            const combine = new Set([...cache, ...records]);
+            cache = Array.from(combine);
+            res.json(cache);
+        }
+        catch (error) {
+            res.status(200).json([]);
+        }
+    });
+}
+exports.searchInventoryController = searchInventoryController;
 function findAllInventoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'findAllInventoryController';
@@ -226,6 +247,11 @@ function updateInventoryController(req, res, next) {
                 throw (0, helper_1.newError)(400, `แก้ไขครุภัณฑ์ ${code} ไม่สำเร็จ`);
             const resultLog = yield log_service_1.logService.create(payloadLog, t);
             yield t.commit();
+            if (inventory.code !== code) {
+                const index = cache.findIndex((item) => item === inventory.code);
+                if (index !== -1)
+                    cache[index] = code;
+            }
             const resInventory = yield inventory_service_1.inventoryService.findById(id);
             const resLog = resultLog.toJSON();
             res.json({

@@ -12,6 +12,12 @@ const status_model_1 = require("../models/status.model");
 const fund_model_1 = require("../models/fund.model");
 const location_model_1 = require("../models/location.model");
 exports.inventoryService = {
+    search(code) {
+        return inventory_model_1.default.findAll({
+            where: { code: { [sequelize_1.Op.like]: `%${code}%` } },
+            attributes: ['code'],
+        });
+    },
     findAll() {
         return inventory_model_1.default.findAll(Object.assign({}, queryOptions()));
     },

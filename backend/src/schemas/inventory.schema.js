@@ -22,6 +22,11 @@ const dateEnd = 'ไม่พบวันที่สิ้นสุดในก
 const track = 'ไม่พบเลข Track';
 const imageEdit = 'ไม่พบการยืนยันแก้ไขรูปภาพ';
 exports.inventorySchema = {
+    search: (0, zod_1.object)({
+        query: (0, zod_1.object)({
+            code: (0, zod_1.string)({ required_error: code }),
+        }),
+    }),
     findByDate: (0, zod_1.object)({
         params: (0, zod_1.object)({
             dateStart: (0, zod_1.string)({ required_error: dateStart }).min(1, {

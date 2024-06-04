@@ -72,7 +72,7 @@ function isUserActive(req, res, next) {
             if (!user)
                 throw (0, helper_1.newError)(404, 'ไม่พบข้อมูลผู้ใช้งานในระบบ', true);
             if (!user.active)
-                throw (0, helper_1.newError)(401, 'บัญชีนี้ถูกระงับการใช้งาน', true);
+                throw (0, helper_1.newError)(401, `${user.email} บัญชีนี้ถูกระงับการใช้งาน`, true);
             res.locals.user = user.toJSON();
             next();
         }
@@ -87,7 +87,7 @@ function isRoleAdmin(req, res, next) {
         res.locals.func = 'isRoleAdmin';
         try {
             if (res.locals.user.role !== 'admin')
-                throw (0, helper_1.newError)(401, 'บัญชีนี้ไม่มีสิทธิ์เข้าถึงเนื้อหานี้');
+                throw (0, helper_1.newError)(401, `${res.locals.user.email} บัญชีนี้ไม่มีสิทธิ์เข้าถึงเนื้อหานี้`);
             next();
         }
         catch (error) {
