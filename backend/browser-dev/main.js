@@ -164,7 +164,7 @@ var ServerErrorComponent = _ServerErrorComponent;
 var routes = [
   {
     path: "",
-    loadChildren: () => import("./chunk-2UI4GLYQ.js").then((m) => m.DashboardModule)
+    loadChildren: () => import("./chunk-ZWET4WAK.js").then((m) => m.DashboardModule)
   },
   {
     path: "login",
