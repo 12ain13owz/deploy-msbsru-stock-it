@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteInventoryController = exports.updateInventoryController = exports.createInventoryController = exports.findInventoryByCodeController = exports.findInventoryByIdController = exports.findInventoryByTrackController = exports.findInventoryByDateController = exports.initialInventoryController = exports.findAllInventoryController = exports.searchInventoryController = void 0;
+exports.deleteInventoryController = exports.updateInventoryController = exports.createInventoryController = exports.findInventoryByCodeController = exports.findInventoryByIdController = exports.findInventoryByTrackController = exports.findInventoryByDateController = exports.initialInventoryController = exports.findAllInventoryController = exports.searchInventoryByCodeController = exports.searchInventoryController = void 0;
 const inventory_service_1 = require("../services/inventory.service");
 const helper_1 = require("../utils/helper");
 const sequelize_1 = __importDefault(require("../utils/sequelize"));
@@ -26,7 +26,7 @@ function searchInventoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'searchInventoryController';
         try {
-            const query = req.query.code.toLocaleLowerCase();
+            const query = (0, helper_1.removeWhitespace)(req.query.code);
             const inventories = cache.filter((item) => item.includes(query));
             if (inventories.length > 0)
                 return res.json(inventories);
@@ -42,6 +42,20 @@ function searchInventoryController(req, res, next) {
     });
 }
 exports.searchInventoryController = searchInventoryController;
+function searchInventoryByCodeController(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'searchInventoryByCodeController';
+        try {
+            const query = (0, helper_1.removeWhitespace)(req.query.code);
+            const resInventories = yield inventory_service_1.inventoryService.searchByCode(query);
+            res.json(resInventories);
+        }
+        catch (error) {
+            res.status(200).json([]);
+        }
+    });
+}
+exports.searchInventoryByCodeController = searchInventoryByCodeController;
 function findAllInventoryController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'findAllInventoryController';
@@ -92,7 +106,7 @@ function findInventoryByTrackController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'findInventoryByTrackController';
         try {
-            const track = req.params.track;
+            const track = req.params.track.toUpperCase();
             const resInventory = yield inventory_service_1.inventoryService.findByTrack(track);
             res.json(resInventory === null || resInventory === void 0 ? void 0 : resInventory.toJSON());
         }

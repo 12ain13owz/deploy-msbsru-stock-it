@@ -24,6 +24,7 @@ import {
   DecimalPipe,
   DefaultValueAccessor,
   DomSanitizer,
+  ElementRef,
   EventEmitter,
   FormBuilder,
   FormControl,
@@ -182,6 +183,7 @@ import {
   ɵɵdeferEnableTimerScheduling,
   ɵɵdeferWhen,
   ɵɵdefineComponent,
+  ɵɵdefineDirective,
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
@@ -34748,7 +34750,8 @@ var _InventoryService = class _InventoryService {
       status: inventory.Status.name,
       fund: inventory.Fund.name,
       location: inventory.Location.name,
-      description: inventory.description
+      description: inventory.description,
+      createdAt: inventory.createdAt
     })).slice();
   }
   getById(id) {
@@ -40070,30 +40073,107 @@ _SearchService.\u0275fac = function SearchService_Factory(t2) {
 _SearchService.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SearchService, factory: _SearchService.\u0275fac, providedIn: "root" });
 var SearchService = _SearchService;
 
+// src/app/modules/dashboard/directive/auto-code.directive.ts
+var _AutoCodeDirective = class _AutoCodeDirective {
+  constructor(el) {
+    this.el = el;
+    this.regex = new RegExp(/^[0-9-]*$/);
+    this.specialKeys = [
+      "Enter",
+      "Backspace",
+      "Tab",
+      "End",
+      "Home",
+      "ArrowLeft",
+      "ArrowRight"
+    ];
+    this.isBackspace = false;
+  }
+  onKeyDown(event) {
+    if (event.key === "Backspace") {
+      this.isBackspace = true;
+      return;
+    }
+    if (this.specialKeys.indexOf(event.key) !== -1 || event.ctrlKey && ["a", "x", "c", "v"].indexOf(event.key) !== -1) {
+      return;
+    }
+    if (event.key && !String(event.key).match(this.regex)) {
+      event.preventDefault();
+    }
+  }
+  onInput(event) {
+    if (this.isBackspace) {
+      this.isBackspace = false;
+      return;
+    }
+    let value2 = this.el.nativeElement.value;
+    if (value2.length == 2)
+      value2 = value2.slice(0, 2) + "-" + value2.slice(2);
+    if (value2.length == 5)
+      value2 = value2.slice(0, 5) + "-" + value2.slice(6);
+    if (value2.length == 12)
+      value2 = value2.slice(0, 12) + "-" + value2.slice(13);
+    if (value2.length == 16)
+      value2 = value2.slice(0, 16) + "-" + value2.slice(17);
+    if (value2.length == 22)
+      value2 = value2.slice(0, 22) + "-" + value2.slice(22);
+    this.el.nativeElement.value = value2;
+  }
+};
+_AutoCodeDirective.\u0275fac = function AutoCodeDirective_Factory(t2) {
+  return new (t2 || _AutoCodeDirective)(\u0275\u0275directiveInject(ElementRef));
+};
+_AutoCodeDirective.\u0275dir = /* @__PURE__ */ \u0275\u0275defineDirective({ type: _AutoCodeDirective, selectors: [["", "appAutoCode", ""]], hostBindings: function AutoCodeDirective_HostBindings(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275listener("keydown", function AutoCodeDirective_keydown_HostBindingHandler($event) {
+      return ctx.onKeyDown($event);
+    })("input", function AutoCodeDirective_input_HostBindingHandler($event) {
+      return ctx.onInput($event);
+    });
+  }
+} });
+var AutoCodeDirective = _AutoCodeDirective;
+
+// src/app/modules/dashboard/pipes/highlight.pipe.ts
+var _HighlightPipe = class _HighlightPipe {
+  transform(text, search) {
+    const pattern = search.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&").split(" ").filter((t2) => t2.length > 0).join("|");
+    const regex = new RegExp(pattern, "gi");
+    return search ? text.replace(regex, (match) => `<b>${match}</b>`) : text;
+  }
+};
+_HighlightPipe.\u0275fac = function HighlightPipe_Factory(t2) {
+  return new (t2 || _HighlightPipe)();
+};
+_HighlightPipe.\u0275pipe = /* @__PURE__ */ \u0275\u0275definePipe({ name: "highlight", type: _HighlightPipe, pure: true });
+var HighlightPipe = _HighlightPipe;
+
 // src/app/modules/dashboard/components/scan/scan.component.ts
 var _c02 = ["qrBox"];
 var _c1 = (a0) => ({ blur: a0 });
 function ScanComponent_For_21_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-option", 6);
-    \u0275\u0275text(1);
+    \u0275\u0275element(1, "span", 19);
+    \u0275\u0275pipe(2, "highlight");
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const code_r2 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
     \u0275\u0275property("value", code_r2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(code_r2);
+    \u0275\u0275property("innerHTML", \u0275\u0275pipeBind2(2, 2, code_r2, ctx_r2.search.value), \u0275\u0275sanitizeHtml);
   }
 }
 function ScanComponent_button_23_Template(rf, ctx) {
   if (rf & 1) {
-    const _r3 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "button", 19);
+    const _r4 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 20);
     \u0275\u0275listener("click", function ScanComponent_button_23_Template_button_click_0_listener() {
-      \u0275\u0275restoreView(_r3);
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.search.setValue(""));
+      \u0275\u0275restoreView(_r4);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.search.setValue(""));
     });
     \u0275\u0275elementStart(1, "mat-icon");
     \u0275\u0275text(2, "close");
@@ -40231,7 +40311,7 @@ var _ScanComponent = class _ScanComponent {
   }
   _filter(value2) {
     const filterValue = value2.toLowerCase();
-    return this.cache.filter((option) => option.toLowerCase().includes(filterValue));
+    return this.cache.filter((option) => option.toLowerCase().startsWith(filterValue));
   }
   initSubscriptions() {
     defer(() => this.qrBox ? of(null) : interval(300).pipe(filter(() => !!this.qrBox), take(1))).subscribe(() => this.onStartCamera());
@@ -40250,7 +40330,7 @@ _ScanComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _
     let _t2;
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.qrBox = _t2.first);
   }
-}, decls: 33, vars: 14, consts: [["qrBox", ""], ["auto", "matAutocomplete"], [1, "mat-elevation-z8", "mb-20"], ["dynamicHeight", "", 3, "selectedIndexChange"], ["label", "\u0E01\u0E25\u0E49\u0E2D\u0E07"], [3, "ngModelChange", "change", "ngModel"], [3, "value"], [3, "ngClass"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit", "formGroup"], [1, "w-100"], ["type", "text", "matInput", "", 3, "input", "formControl", "matAutocomplete"], ["autoActiveFirstOption", ""], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["mode", "indeterminate"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"]], template: function ScanComponent_Template(rf, ctx) {
+}, decls: 33, vars: 14, consts: [["qrBox", ""], ["auto", "matAutocomplete"], [1, "mat-elevation-z8", "mb-20"], ["dynamicHeight", "", 3, "selectedIndexChange"], ["label", "\u0E01\u0E25\u0E49\u0E2D\u0E07"], [3, "ngModelChange", "change", "ngModel"], [3, "value"], [3, "ngClass"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit", "formGroup"], [1, "w-100"], ["type", "text", "matInput", "", "appAutoCode", "", 3, "input", "formControl", "matAutocomplete"], ["autoActiveFirstOption", ""], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["mode", "indeterminate"], [3, "innerHTML"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"]], template: function ScanComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "mat-card", 2)(1, "mat-tab-group", 3);
@@ -40291,7 +40371,7 @@ _ScanComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _
     });
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(18, "mat-autocomplete", 12, 1);
-    \u0275\u0275repeaterCreate(20, ScanComponent_For_21_Template, 2, 2, "mat-option", 6, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(20, ScanComponent_For_21_Template, 3, 5, "mat-option", 6, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275pipe(22, "async");
     \u0275\u0275elementEnd();
     \u0275\u0275template(23, ScanComponent_button_23_Template, 3, 0, "button", 13);
@@ -40335,7 +40415,7 @@ _ScanComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _
     \u0275\u0275advance(5);
     \u0275\u0275conditional(32, ctx.isLoading ? 32 : -1);
   }
-}, dependencies: [NgClass, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, MatButton, MatIconButton, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatSuffix, MatProgressBar, MatRadioGroup, MatRadioButton, MatOption, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, NgModel, AsyncPipe], styles: ['\n\nimg[_ngcontent-%COMP%] {\n  width: 100px;\n  height: 100px;\n}\n.dark-theme[_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  color: #f54831;\n  background-color: #303030;\n}\n.dark-theme[_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%] {\n  color: #fff;\n  background-color: #ff5722;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  min-width: 60px;\n}\n.search-box[_ngcontent-%COMP%] {\n  display: flex;\n  max-width: 850px;\n}\n.search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  padding: 12px 20px;\n  color: #ff9800;\n  background-color: #f1f4f7;\n  font-size: 1rem;\n  font-weight: 700;\n  outline: none;\n  border: none;\n  border-radius: 1.25rem 0 0 1.25rem;\n  box-sizing: border-box;\n}\n.search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%] {\n  flex-basis: 120px;\n  background-color: #ff9800;\n  font-size: 1rem;\n  outline: none;\n  border: none;\n  border-radius: 0 1.25rem 1.25rem 0;\n  box-sizing: border-box;\n  cursor: pointer;\n}\n.search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%]:disabled {\n  cursor: default;\n  opacity: 0.6;\n}\n.search-box[_ngcontent-%COMP%]   .search-input-box[_ngcontent-%COMP%] {\n  position: relative;\n  flex-grow: 1;\n}\n.search-box[_ngcontent-%COMP%]   .search-input-box[_ngcontent-%COMP%]   .close[_ngcontent-%COMP%] {\n  position: absolute;\n  top: -3px;\n  right: -5px;\n  color: #6c757d;\n}\n.stock-field[_ngcontent-%COMP%] {\n  margin-top: 20px;\n  width: 80px;\n}\n.btn-submit[_ngcontent-%COMP%] {\n  align-items: center;\n  appearance: none;\n  background-clip: padding-box;\n  background-color: initial;\n  background-image: none;\n  border-style: none;\n  box-sizing: border-box;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  flex-direction: row;\n  flex-shrink: 0;\n  font-family: Eina01, sans-serif;\n  font-size: 16px;\n  font-weight: 800;\n  justify-content: center;\n  line-height: 24px;\n  margin: 0;\n  min-height: 64px;\n  outline: none;\n  overflow: visible;\n  padding: 19px 26px;\n  pointer-events: auto;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  text-transform: none;\n  user-select: none;\n  -webkit-user-select: none;\n  touch-action: manipulation;\n  vertical-align: middle;\n  width: auto;\n  word-break: keep-all;\n  z-index: 0;\n}\n@media (min-width: 768px) {\n  .button-77[_ngcontent-%COMP%] {\n    padding: 19px 32px;\n  }\n}\n.btn-submit[_ngcontent-%COMP%]:before, .btn-submit[_ngcontent-%COMP%]:after {\n  border-radius: 80px;\n}\n.btn-submit[_ngcontent-%COMP%]:before {\n  background-color: rgba(249, 58, 19, 0.32);\n  content: "";\n  display: block;\n  height: 100%;\n  left: 0;\n  overflow: hidden;\n  position: absolute;\n  top: 0;\n  width: 100%;\n  z-index: -2;\n}\n.btn-submit[_ngcontent-%COMP%]:after {\n  background-color: initial;\n  background-image:\n    linear-gradient(\n      92.83deg,\n      #ff7426 0,\n      #f93a13 100%);\n  bottom: 4px;\n  content: "";\n  display: block;\n  left: 4px;\n  overflow: hidden;\n  position: absolute;\n  right: 4px;\n  top: 4px;\n  transition: all 100ms ease-out;\n  z-index: -1;\n}\n.btn-submit[_ngcontent-%COMP%]:hover:not(:disabled):after {\n  bottom: 0;\n  left: 0;\n  right: 0;\n  top: 0;\n  transition-timing-function: ease-in;\n}\n.btn-submit[_ngcontent-%COMP%]:active:not(:disabled) {\n  color: #ccc;\n}\n.btn-submit[_ngcontent-%COMP%]:active:not(:disabled):after {\n  background-image:\n    linear-gradient(\n      0deg,\n      rgba(0, 0, 0, 0.2),\n      rgba(0, 0, 0, 0.2)),\n    linear-gradient(\n      92.83deg,\n      #ff7426 0,\n      #f93a13 100%);\n  bottom: 4px;\n  left: 4px;\n  right: 4px;\n  top: 4px;\n}\n.btn-submit[_ngcontent-%COMP%]:disabled {\n  cursor: default;\n  opacity: 0.24;\n}\n/*# sourceMappingURL=scan.component.css.map */'] });
+}, dependencies: [NgClass, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, MatButton, MatIconButton, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatSuffix, MatProgressBar, MatRadioGroup, MatRadioButton, MatOption, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, NgModel, AutoCodeDirective, AsyncPipe, HighlightPipe], styles: ['\n\nimg[_ngcontent-%COMP%] {\n  width: 100px;\n  height: 100px;\n}\n.dark-theme[_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  color: #f54831;\n  background-color: #303030;\n}\n.dark-theme[_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%] {\n  color: #fff;\n  background-color: #ff5722;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\n.mat-column-action[_ngcontent-%COMP%] {\n  min-width: 60px;\n}\n.search-box[_ngcontent-%COMP%] {\n  display: flex;\n  max-width: 850px;\n}\n.search-box[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  padding: 12px 20px;\n  color: #ff9800;\n  background-color: #f1f4f7;\n  font-size: 1rem;\n  font-weight: 700;\n  outline: none;\n  border: none;\n  border-radius: 1.25rem 0 0 1.25rem;\n  box-sizing: border-box;\n}\n.search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%] {\n  flex-basis: 120px;\n  background-color: #ff9800;\n  font-size: 1rem;\n  outline: none;\n  border: none;\n  border-radius: 0 1.25rem 1.25rem 0;\n  box-sizing: border-box;\n  cursor: pointer;\n}\n.search-box[_ngcontent-%COMP%]   button[type=submit][_ngcontent-%COMP%]:disabled {\n  cursor: default;\n  opacity: 0.6;\n}\n.search-box[_ngcontent-%COMP%]   .search-input-box[_ngcontent-%COMP%] {\n  position: relative;\n  flex-grow: 1;\n}\n.search-box[_ngcontent-%COMP%]   .search-input-box[_ngcontent-%COMP%]   .close[_ngcontent-%COMP%] {\n  position: absolute;\n  top: -3px;\n  right: -5px;\n  color: #6c757d;\n}\n.stock-field[_ngcontent-%COMP%] {\n  margin-top: 20px;\n  width: 80px;\n}\n.btn-submit[_ngcontent-%COMP%] {\n  align-items: center;\n  appearance: none;\n  background-clip: padding-box;\n  background-color: initial;\n  background-image: none;\n  border-style: none;\n  box-sizing: border-box;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  flex-direction: row;\n  flex-shrink: 0;\n  font-family: Eina01, sans-serif;\n  font-size: 16px;\n  font-weight: 800;\n  justify-content: center;\n  line-height: 24px;\n  margin: 0;\n  min-height: 64px;\n  outline: none;\n  overflow: visible;\n  padding: 19px 26px;\n  pointer-events: auto;\n  position: relative;\n  text-align: center;\n  text-decoration: none;\n  text-transform: none;\n  user-select: none;\n  -webkit-user-select: none;\n  touch-action: manipulation;\n  vertical-align: middle;\n  width: auto;\n  word-break: keep-all;\n  z-index: 0;\n}\n@media (min-width: 768px) {\n  .button-77[_ngcontent-%COMP%] {\n    padding: 19px 32px;\n  }\n}\n.btn-submit[_ngcontent-%COMP%]:before, .btn-submit[_ngcontent-%COMP%]:after {\n  border-radius: 80px;\n}\n.btn-submit[_ngcontent-%COMP%]:before {\n  background-color: rgba(249, 58, 19, 0.32);\n  content: "";\n  display: block;\n  height: 100%;\n  left: 0;\n  overflow: hidden;\n  position: absolute;\n  top: 0;\n  width: 100%;\n  z-index: -2;\n}\n.btn-submit[_ngcontent-%COMP%]:after {\n  background-color: initial;\n  background-image:\n    linear-gradient(\n      92.83deg,\n      #ff7426 0,\n      #f93a13 100%);\n  bottom: 4px;\n  content: "";\n  display: block;\n  left: 4px;\n  overflow: hidden;\n  position: absolute;\n  right: 4px;\n  top: 4px;\n  transition: all 100ms ease-out;\n  z-index: -1;\n}\n.btn-submit[_ngcontent-%COMP%]:hover:not(:disabled):after {\n  bottom: 0;\n  left: 0;\n  right: 0;\n  top: 0;\n  transition-timing-function: ease-in;\n}\n.btn-submit[_ngcontent-%COMP%]:active:not(:disabled) {\n  color: #ccc;\n}\n.btn-submit[_ngcontent-%COMP%]:active:not(:disabled):after {\n  background-image:\n    linear-gradient(\n      0deg,\n      rgba(0, 0, 0, 0.2),\n      rgba(0, 0, 0, 0.2)),\n    linear-gradient(\n      92.83deg,\n      #ff7426 0,\n      #f93a13 100%);\n  bottom: 4px;\n  left: 4px;\n  right: 4px;\n  top: 4px;\n}\n.btn-submit[_ngcontent-%COMP%]:disabled {\n  cursor: default;\n  opacity: 0.24;\n}\n/*# sourceMappingURL=scan.component.css.map */'] });
 var ScanComponent = _ScanComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ScanComponent, { className: "ScanComponent", filePath: "src\\app\\modules\\dashboard\\components\\scan\\scan.component.ts", lineNumber: 49 });
@@ -42173,7 +42253,7 @@ var PrintComponent = _PrintComponent;
 // src/app/modules/dashboard/pipes/cut-detail.pipe.ts
 var _CutDetailPipe = class _CutDetailPipe {
   transform(value2) {
-    const maxLength = 50;
+    const maxLength = 100;
     if (value2.length < maxLength)
       return value2;
     const shortened = value2.slice(0, maxLength);
@@ -42471,6 +42551,10 @@ var _LogApiService = class _LogApiService {
     this.logService = logService;
     this.apiUrl = environment.apiUrl + "log";
   }
+  searchByCode(code) {
+    const params = new HttpParams().set("code", code);
+    return this.http.get(`${this.apiUrl}/search/code`, { params }).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => this.logService.assign(res)));
+  }
   getAll() {
     return this.http.get(this.apiUrl).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => this.logService.assign(res)));
   }
@@ -42496,33 +42580,58 @@ _LogApiService.\u0275fac = function LogApiService_Factory(t2) {
 _LogApiService.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _LogApiService, factory: _LogApiService.\u0275fac, providedIn: "root" });
 var LogApiService = _LogApiService;
 
+// src/app/modules/dashboard/pipes/thai-date.pipe.ts
+var _ThaiDatePipe = class _ThaiDatePipe {
+  constructor(datePipe) {
+    this.datePipe = datePipe;
+  }
+  transform(value2) {
+    if (!value2)
+      return null;
+    const dateStr = this.datePipe.transform(value2, "d/M/yyyy HH:mm:ss");
+    if (!dateStr)
+      return null;
+    const [datePart, timePart] = dateStr.split(" ");
+    const [d2, m2, y2] = datePart.split("/");
+    const buddhistYear = +y2 + 543;
+    return `${d2}/${m2}/${buddhistYear} ${timePart}`;
+  }
+};
+_ThaiDatePipe.\u0275fac = function ThaiDatePipe_Factory(t2) {
+  return new (t2 || _ThaiDatePipe)(\u0275\u0275directiveInject(DatePipe, 16));
+};
+_ThaiDatePipe.\u0275pipe = /* @__PURE__ */ \u0275\u0275definePipe({ name: "thaiDate", type: _ThaiDatePipe, pure: true });
+var ThaiDatePipe = _ThaiDatePipe;
+
 // src/app/modules/dashboard/components/log/log-list/log-list.component.ts
 var _c09 = ["filterInput"];
-var LogListComponent_Defer_41_DepsFn = () => [RouterLink, NgClass, \u0275NgNoValidate, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatPaginator, MatSort, MatSortHeader, MatSelect, MatSelectTrigger, MatOption, LazyLoadImageDirective, LoadingDataComponent, DatePipe, CutDetailPipe];
+var LogListComponent_Defer_41_DepsFn = () => [RouterLink, NgClass, \u0275NgNoValidate, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatPaginator, MatSort, MatSortHeader, MatSelect, MatSelectTrigger, MatOption, LazyLoadImageDirective, LoadingDataComponent, CutDetailPipe, ThaiDatePipe];
 var _c15 = () => [10, 25, 50, 100];
 var _c22 = (a0) => ["./view", a0];
 var _c32 = (a0, a1) => ({ newParcel: a0, editParcel: a1 });
 function LogListComponent_For_25_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-option", 17);
-    \u0275\u0275text(1);
+    \u0275\u0275elementStart(0, "mat-option", 16);
+    \u0275\u0275element(1, "span", 24);
+    \u0275\u0275pipe(2, "highlight");
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const code_r3 = ctx.$implicit;
+    const ctx_r3 = \u0275\u0275nextContext();
     \u0275\u0275property("value", code_r3);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(code_r3);
+    \u0275\u0275property("innerHTML", \u0275\u0275pipeBind2(2, 2, code_r3, ctx_r3.search.value), \u0275\u0275sanitizeHtml);
   }
 }
 function LogListComponent_button_27_Template(rf, ctx) {
   if (rf & 1) {
-    const _r4 = \u0275\u0275getCurrentView();
+    const _r5 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "button", 25);
     \u0275\u0275listener("click", function LogListComponent_button_27_Template_button_click_0_listener() {
-      \u0275\u0275restoreView(_r4);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.search.setValue(""));
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.search.setValue(""));
     });
     \u0275\u0275elementStart(1, "mat-icon");
     \u0275\u0275text(2, "close");
@@ -42531,7 +42640,7 @@ function LogListComponent_button_27_Template(rf, ctx) {
 }
 function LogListComponent_Conditional_38_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "mat-progress-bar", 24);
+    \u0275\u0275element(0, "mat-progress-bar", 23);
   }
 }
 function LogListComponent_Defer_39_Conditional_14_Template(rf, ctx) {
@@ -42541,9 +42650,9 @@ function LogListComponent_Defer_39_Conditional_14_Template(rf, ctx) {
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
+    const ctx_r3 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" (+", ((ctx_r4.category.value == null ? null : ctx_r4.category.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
+    \u0275\u0275textInterpolate1(" (+", ((ctx_r3.category.value == null ? null : ctx_r3.category.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
   }
 }
 function LogListComponent_Defer_39_For_16_Template(rf, ctx) {
@@ -42552,8 +42661,8 @@ function LogListComponent_Defer_39_For_16_Template(rf, ctx) {
     \u0275\u0275elementStart(0, "mat-option", 37);
     \u0275\u0275listener("click", function LogListComponent_Defer_39_For_16_Template_mat_option_click_0_listener() {
       \u0275\u0275restoreView(_r7);
-      const ctx_r4 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r4.onFilter());
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.onFilter());
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
@@ -42572,9 +42681,9 @@ function LogListComponent_Defer_39_Conditional_23_Template(rf, ctx) {
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
+    const ctx_r3 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" (+", ((ctx_r4.status.value == null ? null : ctx_r4.status.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
+    \u0275\u0275textInterpolate1(" (+", ((ctx_r3.status.value == null ? null : ctx_r3.status.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
   }
 }
 function LogListComponent_Defer_39_For_25_Template(rf, ctx) {
@@ -42583,8 +42692,8 @@ function LogListComponent_Defer_39_For_25_Template(rf, ctx) {
     \u0275\u0275elementStart(0, "mat-option", 37);
     \u0275\u0275listener("click", function LogListComponent_Defer_39_For_25_Template_mat_option_click_0_listener() {
       \u0275\u0275restoreView(_r9);
-      const ctx_r4 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r4.onFilter());
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.onFilter());
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
@@ -42603,9 +42712,9 @@ function LogListComponent_Defer_39_Conditional_32_Template(rf, ctx) {
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
+    const ctx_r3 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" (+", ((ctx_r4.inventory.value == null ? null : ctx_r4.inventory.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
+    \u0275\u0275textInterpolate1(" (+", ((ctx_r3.inventory.value == null ? null : ctx_r3.inventory.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
   }
 }
 function LogListComponent_Defer_39_For_34_Template(rf, ctx) {
@@ -42614,8 +42723,8 @@ function LogListComponent_Defer_39_For_34_Template(rf, ctx) {
     \u0275\u0275elementStart(0, "mat-option", 37);
     \u0275\u0275listener("click", function LogListComponent_Defer_39_For_34_Template_mat_option_click_0_listener() {
       \u0275\u0275restoreView(_r11);
-      const ctx_r4 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r4.onFilter());
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.onFilter());
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
@@ -42661,11 +42770,11 @@ function LogListComponent_Defer_39_Conditional_40_mat_cell_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const element_r14 = ctx.$implicit;
-    const ctx_r4 = \u0275\u0275nextContext(3);
+    const ctx_r3 = \u0275\u0275nextContext(3);
     \u0275\u0275advance();
     \u0275\u0275property("routerLink", \u0275\u0275pureFunction1(3, _c22, element_r14.id));
     \u0275\u0275advance();
-    \u0275\u0275property("defaultImage", "assets/images/no-image.jpg")("lazyLoad", ctx_r4.imageUrl + element_r14.image);
+    \u0275\u0275property("defaultImage", "assets/images/no-image.jpg")("lazyLoad", ctx_r3.imageUrl + element_r14.image);
   }
 }
 function LogListComponent_Defer_39_Conditional_40_mat_header_cell_8_Template(rf, ctx) {
@@ -42779,7 +42888,7 @@ function LogListComponent_Defer_39_Conditional_40_mat_cell_21_Template(rf, ctx) 
 function LogListComponent_Defer_39_Conditional_40_mat_header_cell_23_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-header-cell", 50);
-    \u0275\u0275text(1, "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48\u0E2A\u0E23\u0E49\u0E32\u0E07 Log");
+    \u0275\u0275text(1, "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34");
     \u0275\u0275elementEnd();
   }
 }
@@ -42787,13 +42896,13 @@ function LogListComponent_Defer_39_Conditional_40_mat_cell_24_Template(rf, ctx) 
   if (rf & 1) {
     \u0275\u0275elementStart(0, "mat-cell");
     \u0275\u0275text(1);
-    \u0275\u0275pipe(2, "date");
+    \u0275\u0275pipe(2, "thaiDate");
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const element_r20 = ctx.$implicit;
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind2(2, 1, element_r20.createdAt, "medium"), " ");
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, element_r20.createdAt), " ");
   }
 }
 function LogListComponent_Defer_39_Conditional_40_div_25_Template(rf, ctx) {
@@ -42843,18 +42952,18 @@ function LogListComponent_Defer_39_Conditional_40_Template(rf, ctx) {
     \u0275\u0275template(20, LogListComponent_Defer_39_Conditional_40_mat_header_cell_20_Template, 2, 0, "mat-header-cell", 39)(21, LogListComponent_Defer_39_Conditional_40_mat_cell_21_Template, 4, 5, "mat-cell", 40);
     \u0275\u0275elementContainerEnd();
     \u0275\u0275elementContainerStart(22, 47);
-    \u0275\u0275template(23, LogListComponent_Defer_39_Conditional_40_mat_header_cell_23_Template, 2, 0, "mat-header-cell", 39)(24, LogListComponent_Defer_39_Conditional_40_mat_cell_24_Template, 3, 4, "mat-cell", 40);
+    \u0275\u0275template(23, LogListComponent_Defer_39_Conditional_40_mat_header_cell_23_Template, 2, 0, "mat-header-cell", 39)(24, LogListComponent_Defer_39_Conditional_40_mat_cell_24_Template, 3, 3, "mat-cell", 40);
     \u0275\u0275elementContainerEnd();
     \u0275\u0275template(25, LogListComponent_Defer_39_Conditional_40_div_25_Template, 2, 1, "div", 40)(26, LogListComponent_Defer_39_Conditional_40_mat_header_row_26_Template, 1, 0, "mat-header-row", 48)(27, LogListComponent_Defer_39_Conditional_40_mat_row_27_Template, 1, 0, "mat-row", 49);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
-    \u0275\u0275property("dataSource", ctx_r4.dataSource);
+    const ctx_r3 = \u0275\u0275nextContext(2);
+    \u0275\u0275property("dataSource", ctx_r3.dataSource);
     \u0275\u0275advance(26);
-    \u0275\u0275property("matHeaderRowDef", ctx_r4.displayedColumns);
+    \u0275\u0275property("matHeaderRowDef", ctx_r3.displayedColumns);
     \u0275\u0275advance();
-    \u0275\u0275property("matRowDefColumns", ctx_r4.displayedColumns);
+    \u0275\u0275property("matRowDefColumns", ctx_r3.displayedColumns);
   }
 }
 function LogListComponent_Defer_39_Conditional_41_Template(rf, ctx) {
@@ -42874,8 +42983,8 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275elementStart(4, "button", 28);
     \u0275\u0275listener("click", function LogListComponent_Defer_39_Template_button_click_4_listener() {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.onResetFilter());
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.onResetFilter());
     });
     \u0275\u0275text(5, " \u0E23\u0E35\u0E40\u0E0B\u0E47\u0E15 ");
     \u0275\u0275elementEnd()();
@@ -42886,7 +42995,7 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275text(13);
     \u0275\u0275template(14, LogListComponent_Defer_39_Conditional_14_Template, 2, 1, "span", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275repeaterCreate(15, LogListComponent_Defer_39_For_16_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(15, LogListComponent_Defer_39_For_16_Template, 2, 2, "mat-option", 16, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(17, "mat-form-field")(18, "mat-label");
     \u0275\u0275text(19, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
@@ -42895,7 +43004,7 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275text(22);
     \u0275\u0275template(23, LogListComponent_Defer_39_Conditional_23_Template, 2, 1, "span", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275repeaterCreate(24, LogListComponent_Defer_39_For_25_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(24, LogListComponent_Defer_39_For_25_Template, 2, 2, "mat-option", 16, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(26, "mat-form-field")(27, "mat-label");
     \u0275\u0275text(28, "\u0E23\u0E32\u0E22\u0E25\u0E30\u0E40\u0E2D\u0E35\u0E22\u0E14");
@@ -42904,7 +43013,7 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275text(31);
     \u0275\u0275template(32, LogListComponent_Defer_39_Conditional_32_Template, 2, 1, "span", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275repeaterCreate(33, LogListComponent_Defer_39_For_34_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(33, LogListComponent_Defer_39_For_34_Template, 2, 2, "mat-option", 16, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(35, "mat-form-field")(36, "mat-label");
     \u0275\u0275text(37, "\u0E01\u0E23\u0E2D\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25");
@@ -42912,8 +43021,8 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275elementStart(38, "input", 34, 2);
     \u0275\u0275listener("keyup", function LogListComponent_Defer_39_Template_input_keyup_38_listener($event) {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.applyFilter($event));
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.applyFilter($event));
     });
     \u0275\u0275elementEnd()()();
     \u0275\u0275template(40, LogListComponent_Defer_39_Conditional_40_Template, 28, 3, "mat-table", 35)(41, LogListComponent_Defer_39_Conditional_41_Template, 1, 1);
@@ -42921,31 +43030,31 @@ function LogListComponent_Defer_39_Template(rf, ctx) {
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext();
+    const ctx_r3 = \u0275\u0275nextContext();
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(ctx_r4.title);
+    \u0275\u0275textInterpolate(ctx_r3.title);
     \u0275\u0275advance(4);
-    \u0275\u0275property("formGroup", ctx_r4.form);
+    \u0275\u0275property("formGroup", ctx_r3.form);
     \u0275\u0275advance(6);
-    \u0275\u0275textInterpolate1(" ", (ctx_r4.category.value == null ? null : ctx_r4.category.value[0]) || "", " ");
+    \u0275\u0275textInterpolate1(" ", (ctx_r3.category.value == null ? null : ctx_r3.category.value[0]) || "", " ");
     \u0275\u0275advance();
-    \u0275\u0275conditional(14, ((ctx_r4.category.value == null ? null : ctx_r4.category.value.length) || 0) > 1 ? 14 : -1);
+    \u0275\u0275conditional(14, ((ctx_r3.category.value == null ? null : ctx_r3.category.value.length) || 0) > 1 ? 14 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater(ctx_r4.filterLog.categories);
+    \u0275\u0275repeater(ctx_r3.filterLog.categories);
     \u0275\u0275advance(7);
-    \u0275\u0275textInterpolate1(" ", (ctx_r4.status.value == null ? null : ctx_r4.status.value[0]) || "", " ");
+    \u0275\u0275textInterpolate1(" ", (ctx_r3.status.value == null ? null : ctx_r3.status.value[0]) || "", " ");
     \u0275\u0275advance();
-    \u0275\u0275conditional(23, ((ctx_r4.status.value == null ? null : ctx_r4.status.value.length) || 0) > 1 ? 23 : -1);
+    \u0275\u0275conditional(23, ((ctx_r3.status.value == null ? null : ctx_r3.status.value.length) || 0) > 1 ? 23 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater(ctx_r4.filterLog.statuses);
+    \u0275\u0275repeater(ctx_r3.filterLog.statuses);
     \u0275\u0275advance(7);
-    \u0275\u0275textInterpolate1(" ", (ctx_r4.inventory.value == null ? null : ctx_r4.inventory.value[0]) || "", " ");
+    \u0275\u0275textInterpolate1(" ", (ctx_r3.inventory.value == null ? null : ctx_r3.inventory.value[0]) || "", " ");
     \u0275\u0275advance();
-    \u0275\u0275conditional(32, ((ctx_r4.inventory.value == null ? null : ctx_r4.inventory.value.length) || 0) > 1 ? 32 : -1);
+    \u0275\u0275conditional(32, ((ctx_r3.inventory.value == null ? null : ctx_r3.inventory.value.length) || 0) > 1 ? 32 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater(ctx_r4.filterLog.inventories);
+    \u0275\u0275repeater(ctx_r3.filterLog.inventories);
     \u0275\u0275advance(7);
-    \u0275\u0275conditional(40, !ctx_r4.isLoading ? 40 : 41);
+    \u0275\u0275conditional(40, !ctx_r3.isLoading ? 40 : 41);
     \u0275\u0275advance(2);
     \u0275\u0275property("pageSizeOptions", \u0275\u0275pureFunction0(10, _c15));
   }
@@ -43003,7 +43112,7 @@ var _LogListComponent = class _LogListComponent {
     this.dataSource = new MatTableDataSource([]);
     this.isFirstLoading = false;
     this.isSort = false;
-    this.search = new FormControl();
+    this.search = new FormControl("");
     this.cache = this.searchService.getCache();
   }
   ngOnInit() {
@@ -43029,7 +43138,7 @@ var _LogListComponent = class _LogListComponent {
       const code = this.search.value.replace(/^\s+|\s+$/gm, "");
       if (!code)
         return;
-      this.operation$ = this.logApiService.getByCode(code);
+      this.operation$ = this.logApiService.searchByCode(code);
     }
     this.isLoading = true;
     this.isSort = false;
@@ -43126,7 +43235,7 @@ var _LogListComponent = class _LogListComponent {
   }
   _filter(value2) {
     const filterValue = value2.toLowerCase();
-    return this.cache.filter((option) => option.toLowerCase().includes(filterValue));
+    return this.cache.filter((option) => option.toLowerCase().startsWith(filterValue));
   }
 };
 _LogListComponent.\u0275fac = function LogListComponent_Factory(t2) {
@@ -43144,7 +43253,7 @@ _LogListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.sort = _t2.first);
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.filterInput = _t2.first);
   }
-}, decls: 43, vars: 13, consts: [["picker", ""], ["auto", "matAutocomplete"], ["filterInput", ""], [300], [1, "mb-20", "mat-elevation-z8"], ["mat-stretch-tabs", "false", 3, "selectedIndexChange", "selectedIndex"], ["label", "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48"], [1, "w-100"], [3, "rangePicker", "formGroup"], ["matStartDate", "", "formControlName", "start", "readonly", "", 3, "click"], ["matEndDate", "", "formControlName", "end", "readonly", "", 3, "click"], ["align", "end"], ["matIconSuffix", "", 3, "for"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit"], ["type", "text", "matInput", "", 3, "input", "formControl", "matAutocomplete"], ["autoActiveFirstOption", ""], [3, "value"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 3, "click", "disabled"], ["mode", "indeterminate"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"], [1, "mat-elevation-z8"], [1, "mb-16", "d-flex", "justify-between", "align-center"], ["type", "button", "mat-button", "", "color", "warn", 3, "click"], [1, "filter-box", 3, "formGroup"], ["formControlName", "category", "multiple", ""], [1, "additional-selection"], ["formControlName", "status", "multiple", ""], ["formControlName", "inventory", "multiple", ""], ["matInput", "", 3, "keyup"], ["matSort", "", 3, "dataSource"], ["showFirstLastButtons", "", 3, "pageSizeOptions"], [3, "click", "value"], ["matColumnDef", "no"], ["mat-sort-header", "", 4, "matHeaderCellDef"], [4, "matCellDef"], ["matColumnDef", "image"], ["matColumnDef", "code"], ["matColumnDef", "category"], ["matColumnDef", "status"], ["matColumnDef", "description"], ["matColumnDef", "isCreated"], ["matColumnDef", "createdAt"], [4, "matHeaderRowDef"], [4, "matRowDef", "matRowDefColumns"], ["mat-sort-header", ""], [1, "blurred-img", 3, "routerLink"], [3, "defaultImage", "lazyLoad"], [1, "detail-log", 3, "ngClass"], [3, "form"]], template: function LogListComponent_Template(rf, ctx) {
+}, decls: 43, vars: 13, consts: [["picker", ""], ["auto", "matAutocomplete"], ["filterInput", ""], [300], [1, "mb-20", "mat-elevation-z8"], ["mat-stretch-tabs", "false", 3, "selectedIndexChange", "selectedIndex"], ["label", "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48"], [1, "w-100"], [3, "rangePicker", "formGroup"], ["matStartDate", "", "formControlName", "start", "readonly", "", 3, "click"], ["matEndDate", "", "formControlName", "end", "readonly", "", 3, "click"], ["align", "end"], ["matIconSuffix", "", 3, "for"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit"], ["type", "text", "matInput", "", "appAutoCode", "", 3, "input", "formControl", "matAutocomplete"], [3, "value"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 3, "click", "disabled"], ["mode", "indeterminate"], [3, "innerHTML"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"], [1, "mat-elevation-z8"], [1, "mb-16", "d-flex", "justify-between", "align-center"], ["type", "button", "mat-button", "", "color", "warn", 3, "click"], [1, "filter-box", 3, "formGroup"], ["formControlName", "category", "multiple", ""], [1, "additional-selection"], ["formControlName", "status", "multiple", ""], ["formControlName", "inventory", "multiple", ""], ["matInput", "", 3, "keyup"], ["matSort", "", 3, "dataSource"], ["showFirstLastButtons", "", 3, "pageSizeOptions"], [3, "click", "value"], ["matColumnDef", "no"], ["mat-sort-header", "", 4, "matHeaderCellDef"], [4, "matCellDef"], ["matColumnDef", "image"], ["matColumnDef", "code"], ["matColumnDef", "category"], ["matColumnDef", "status"], ["matColumnDef", "description"], ["matColumnDef", "isCreated"], ["matColumnDef", "createdAt"], [4, "matHeaderRowDef"], [4, "matRowDef", "matRowDefColumns"], ["mat-sort-header", ""], [1, "blurred-img", 3, "routerLink"], [3, "defaultImage", "lazyLoad"], [1, "detail-log", 3, "ngClass"], [3, "form"]], template: function LogListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "mat-card", 4)(1, "mat-tab-group", 5);
@@ -43188,15 +43297,15 @@ _LogListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
       return \u0275\u0275resetView(ctx.onSearchAutoComplete(ctx.search.value));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(22, "mat-autocomplete", 16, 1);
-    \u0275\u0275repeaterCreate(24, LogListComponent_For_25_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275elementStart(22, "mat-autocomplete", null, 1);
+    \u0275\u0275repeaterCreate(24, LogListComponent_For_25_Template, 3, 5, "mat-option", 16, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275pipe(26, "async");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(27, LogListComponent_button_27_Template, 3, 0, "button", 18);
-    \u0275\u0275elementStart(28, "button", 19);
-    \u0275\u0275element(29, "mat-icon", 20);
+    \u0275\u0275template(27, LogListComponent_button_27_Template, 3, 0, "button", 17);
+    \u0275\u0275elementStart(28, "button", 18);
+    \u0275\u0275element(29, "mat-icon", 19);
     \u0275\u0275elementEnd()()()()()();
-    \u0275\u0275elementStart(30, "mat-card-actions", 21)(31, "button", 22);
+    \u0275\u0275elementStart(30, "mat-card-actions", 20)(31, "button", 21);
     \u0275\u0275listener("click", function LogListComponent_Template_button_click_31_listener() {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.onSearch());
@@ -43206,7 +43315,7 @@ _LogListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
     \u0275\u0275elementEnd();
     \u0275\u0275text(34, " \u0E04\u0E49\u0E19\u0E2B\u0E32 ");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(35, "button", 23);
+    \u0275\u0275elementStart(35, "button", 22);
     \u0275\u0275listener("click", function LogListComponent_Template_button_click_35_listener() {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.onSearchAll());
@@ -43214,7 +43323,7 @@ _LogListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
     \u0275\u0275text(36, " \u0E04\u0E49\u0E19\u0E2B\u0E32\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 ");
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(37, "mat-card-footer");
-    \u0275\u0275template(38, LogListComponent_Conditional_38_Template, 1, 0, "mat-progress-bar", 24);
+    \u0275\u0275template(38, LogListComponent_Conditional_38_Template, 1, 0, "mat-progress-bar", 23);
     \u0275\u0275elementEnd()();
     \u0275\u0275template(39, LogListComponent_Defer_39_Template, 43, 11)(40, LogListComponent_DeferPlaceholder_40_Template, 1, 1);
     \u0275\u0275defer(41, 39, LogListComponent_Defer_41_DepsFn, null, 40, null, null, 3, \u0275\u0275deferEnableTimerScheduling);
@@ -43243,7 +43352,7 @@ _LogListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type
     \u0275\u0275advance(3);
     \u0275\u0275deferWhen(ctx.dataSource.data.length > 0 || ctx.isFirstLoading);
   }
-}, dependencies: [NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, FormControlName, MatButton, MatIconButton, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatHint, MatSuffix, MatProgressBar, MatOption, MatDatepickerToggle, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, LoadingDataComponent, NgForm, AsyncPipe], styles: ["\n\nimg[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-category[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-status[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-isCreated[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\n.mat-column-createdAt[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n}\n.filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n  flex: 1 1 calc(25% - 10px);\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%]   .additional-selection[_ngcontent-%COMP%] {\n  opacity: 0.75;\n  font-size: 0.75em;\n}\n@media (max-width: 968px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(50% - 10px);\n  }\n}\n@media (min-width: 599px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(25% - 10px);\n  }\n}\n.detail-log[_ngcontent-%COMP%] {\n  font-weight: 600;\n  padding: 6px 10px;\n  border-radius: 6px;\n}\n.newParcel[_ngcontent-%COMP%] {\n  background-color: #ff9800;\n  color: #000;\n}\n.editParcel[_ngcontent-%COMP%] {\n  background-color: #ffeb3b;\n  color: #000;\n}\n.dark-theme[_nghost-%COMP%]   .newParcel[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .newParcel[_ngcontent-%COMP%] {\n  background-color: #ff5722;\n  color: #fff;\n}\n.dark-theme[_nghost-%COMP%]   .editParcel[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .editParcel[_ngcontent-%COMP%] {\n  background-color: #d6a505;\n  color: #fff;\n}\n/*# sourceMappingURL=log-list.component.css.map */"] });
+}, dependencies: [NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, FormControlName, MatButton, MatIconButton, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatHint, MatSuffix, MatProgressBar, MatOption, MatDatepickerToggle, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, LoadingDataComponent, NgForm, AutoCodeDirective, AsyncPipe, HighlightPipe], styles: ["\n\nimg[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-category[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-status[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-isCreated[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\n.mat-column-createdAt[_ngcontent-%COMP%] {\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n}\n.filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n  flex: 1 1 calc(25% - 10px);\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%]   .additional-selection[_ngcontent-%COMP%] {\n  opacity: 0.75;\n  font-size: 0.75em;\n}\n@media (max-width: 968px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(50% - 10px);\n  }\n}\n@media (min-width: 599px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(25% - 10px);\n  }\n}\n.detail-log[_ngcontent-%COMP%] {\n  font-weight: 600;\n  padding: 6px 10px;\n  border-radius: 6px;\n}\n.newParcel[_ngcontent-%COMP%] {\n  background-color: #ff9800;\n  color: #000;\n}\n.editParcel[_ngcontent-%COMP%] {\n  background-color: #ffeb3b;\n  color: #000;\n}\n.dark-theme[_nghost-%COMP%]   .newParcel[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .newParcel[_ngcontent-%COMP%] {\n  background-color: #ff5722;\n  color: #fff;\n}\n.dark-theme[_nghost-%COMP%]   .editParcel[_ngcontent-%COMP%], .dark-theme   [_nghost-%COMP%]   .editParcel[_ngcontent-%COMP%] {\n  background-color: #d6a505;\n  color: #fff;\n}\n/*# sourceMappingURL=log-list.component.css.map */"] });
 var LogListComponent = _LogListComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(LogListComponent, { className: "LogListComponent", filePath: "src\\app\\modules\\dashboard\\components\\log\\log-list\\log-list.component.ts", lineNumber: 46 });
@@ -44506,6 +44615,10 @@ var _InventoryApiService = class _InventoryApiService {
     this.socketLogService = socketLogService;
     this.apiUrl = environment.apiUrl + "inventory";
   }
+  searchByCode(code) {
+    const params = new HttpParams().set("code", code);
+    return this.http.get(`${this.apiUrl}/search/code`, { params }).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => this.inventoryService.assign(res)));
+  }
   getAll() {
     return this.http.get(this.apiUrl).pipe(switchMap((res) => timer(200).pipe(map(() => res))), tap((res) => this.inventoryService.assign(res)));
   }
@@ -44554,30 +44667,32 @@ var InventoryApiService = _InventoryApiService;
 
 // src/app/modules/dashboard/components/inventory/inventory-list/inventory-list.component.ts
 var _c014 = ["filterInput"];
-var InventoryListComponent_Defer_45_DepsFn = () => [RouterLink, \u0275NgNoValidate, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatSlideToggle, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatPaginator, MatSort, MatSortHeader, MatSelect, MatSelectTrigger, MatOption, MatCheckbox, LazyLoadImageDirective, LoadingDataComponent, NgModel, CutDetailPipe];
+var InventoryListComponent_Defer_45_DepsFn = () => [RouterLink, \u0275NgNoValidate, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatSlideToggle, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatPaginator, MatSort, MatSortHeader, MatSelect, MatSelectTrigger, MatOption, MatCheckbox, LazyLoadImageDirective, LoadingDataComponent, NgModel, CutDetailPipe, ThaiDatePipe];
 var _c18 = () => [10, 25, 50, 100];
 var _c23 = (a0) => ["./view", a0];
 function InventoryListComponent_For_28_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-option", 18);
-    \u0275\u0275text(1);
+    \u0275\u0275elementStart(0, "mat-option", 17);
+    \u0275\u0275element(1, "span", 25);
+    \u0275\u0275pipe(2, "highlight");
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const code_r3 = ctx.$implicit;
+    const ctx_r3 = \u0275\u0275nextContext();
     \u0275\u0275property("value", code_r3);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(code_r3);
+    \u0275\u0275property("innerHTML", \u0275\u0275pipeBind2(2, 2, code_r3, ctx_r3.search.value), \u0275\u0275sanitizeHtml);
   }
 }
 function InventoryListComponent_button_30_Template(rf, ctx) {
   if (rf & 1) {
-    const _r4 = \u0275\u0275getCurrentView();
+    const _r5 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "button", 26);
     \u0275\u0275listener("click", function InventoryListComponent_button_30_Template_button_click_0_listener() {
-      \u0275\u0275restoreView(_r4);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.search.setValue(""));
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.search.setValue(""));
     });
     \u0275\u0275elementStart(1, "mat-icon");
     \u0275\u0275text(2, "close");
@@ -44586,7 +44701,7 @@ function InventoryListComponent_button_30_Template(rf, ctx) {
 }
 function InventoryListComponent_Conditional_42_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "mat-progress-bar", 25);
+    \u0275\u0275element(0, "mat-progress-bar", 24);
   }
 }
 function InventoryListComponent_Defer_43_Conditional_14_Template(rf, ctx) {
@@ -44596,9 +44711,9 @@ function InventoryListComponent_Defer_43_Conditional_14_Template(rf, ctx) {
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
+    const ctx_r3 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" (+", ((ctx_r4.category.value == null ? null : ctx_r4.category.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
+    \u0275\u0275textInterpolate1(" (+", ((ctx_r3.category.value == null ? null : ctx_r3.category.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
   }
 }
 function InventoryListComponent_Defer_43_For_16_Template(rf, ctx) {
@@ -44607,8 +44722,8 @@ function InventoryListComponent_Defer_43_For_16_Template(rf, ctx) {
     \u0275\u0275elementStart(0, "mat-option", 40);
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_For_16_Template_mat_option_click_0_listener() {
       \u0275\u0275restoreView(_r7);
-      const ctx_r4 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r4.onFilter());
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.onFilter());
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
@@ -44627,9 +44742,9 @@ function InventoryListComponent_Defer_43_Conditional_23_Template(rf, ctx) {
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
+    const ctx_r3 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" (+", ((ctx_r4.status.value == null ? null : ctx_r4.status.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
+    \u0275\u0275textInterpolate1(" (+", ((ctx_r3.status.value == null ? null : ctx_r3.status.value.length) || 0) - 1, " \u0E2D\u0E37\u0E48\u0E19 \u0E46 ) ");
   }
 }
 function InventoryListComponent_Defer_43_For_25_Template(rf, ctx) {
@@ -44638,8 +44753,8 @@ function InventoryListComponent_Defer_43_For_25_Template(rf, ctx) {
     \u0275\u0275elementStart(0, "mat-option", 40);
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_For_25_Template_mat_option_click_0_listener() {
       \u0275\u0275restoreView(_r9);
-      const ctx_r4 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r4.onFilter());
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.onFilter());
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
@@ -44654,51 +44769,51 @@ function InventoryListComponent_Defer_43_For_25_Template(rf, ctx) {
 function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_header_cell_1_Template(rf, ctx) {
   if (rf & 1) {
     const _r11 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "mat-header-cell", 55)(1, "mat-checkbox", 56);
+    \u0275\u0275elementStart(0, "mat-header-cell", 56)(1, "mat-checkbox", 57);
     \u0275\u0275listener("change", function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_header_cell_1_Template_mat_checkbox_change_1_listener($event) {
       \u0275\u0275restoreView(_r11);
-      const ctx_r4 = \u0275\u0275nextContext(4);
-      return \u0275\u0275resetView($event ? ctx_r4.toggleAllRows() : null);
+      const ctx_r3 = \u0275\u0275nextContext(4);
+      return \u0275\u0275resetView($event ? ctx_r3.toggleAllRows() : null);
     });
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(4);
+    const ctx_r3 = \u0275\u0275nextContext(4);
     \u0275\u0275advance();
-    \u0275\u0275property("checked", ctx_r4.selection.hasValue() && ctx_r4.isAllSelected())("indeterminate", ctx_r4.selection.hasValue() && !ctx_r4.isAllSelected());
+    \u0275\u0275property("checked", ctx_r3.selection.hasValue() && ctx_r3.isAllSelected())("indeterminate", ctx_r3.selection.hasValue() && !ctx_r3.isAllSelected());
   }
 }
 function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_cell_2_Template(rf, ctx) {
   if (rf & 1) {
     const _r12 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "mat-cell", 55)(1, "mat-checkbox", 57);
+    \u0275\u0275elementStart(0, "mat-cell", 56)(1, "mat-checkbox", 58);
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_cell_2_Template_mat_checkbox_click_1_listener($event) {
       \u0275\u0275restoreView(_r12);
       return \u0275\u0275resetView($event.stopPropagation());
     })("change", function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_cell_2_Template_mat_checkbox_change_1_listener($event) {
       const row_r13 = \u0275\u0275restoreView(_r12).$implicit;
-      const ctx_r4 = \u0275\u0275nextContext(4);
-      return \u0275\u0275resetView($event ? ctx_r4.selection.toggle(row_r13) : null);
+      const ctx_r3 = \u0275\u0275nextContext(4);
+      return \u0275\u0275resetView($event ? ctx_r3.selection.toggle(row_r13) : null);
     });
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
     const row_r13 = ctx.$implicit;
-    const ctx_r4 = \u0275\u0275nextContext(4);
+    const ctx_r3 = \u0275\u0275nextContext(4);
     \u0275\u0275advance();
-    \u0275\u0275property("checked", ctx_r4.selection.isSelected(row_r13));
+    \u0275\u0275property("checked", ctx_r3.selection.isSelected(row_r13));
   }
 }
 function InventoryListComponent_Defer_43_Conditional_35_Conditional_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0, 41);
-    \u0275\u0275template(1, InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_header_cell_1_Template, 2, 2, "mat-header-cell", 53)(2, InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_cell_2_Template, 2, 1, "mat-cell", 54);
+    \u0275\u0275template(1, InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_header_cell_1_Template, 2, 2, "mat-header-cell", 54)(2, InventoryListComponent_Defer_43_Conditional_35_Conditional_1_mat_cell_2_Template, 2, 1, "mat-cell", 55);
     \u0275\u0275elementContainerEnd();
   }
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "No.");
     \u0275\u0275elementEnd();
   }
@@ -44717,29 +44832,29 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_4_Template(rf, 
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E23\u0E39\u0E1B");
     \u0275\u0275elementEnd();
   }
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_cell_7_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-cell")(1, "a", 59);
-    \u0275\u0275element(2, "img", 60);
+    \u0275\u0275elementStart(0, "mat-cell")(1, "a", 60);
+    \u0275\u0275element(2, "img", 61);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
     const element_r15 = ctx.$implicit;
-    const ctx_r4 = \u0275\u0275nextContext(3);
+    const ctx_r3 = \u0275\u0275nextContext(3);
     \u0275\u0275advance();
     \u0275\u0275property("routerLink", \u0275\u0275pureFunction1(3, _c23, element_r15.id));
     \u0275\u0275advance();
-    \u0275\u0275property("defaultImage", "assets/images/no-image.jpg")("lazyLoad", ctx_r4.imageUrl + element_r15.image);
+    \u0275\u0275property("defaultImage", "assets/images/no-image.jpg")("lazyLoad", ctx_r3.imageUrl + element_r15.image);
   }
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_10_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C");
     \u0275\u0275elementEnd();
   }
@@ -44758,7 +44873,7 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_11_Template(rf,
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_13_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E1B\u0E23\u0E30\u0E40\u0E20\u0E17");
     \u0275\u0275elementEnd();
   }
@@ -44777,7 +44892,7 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_14_Template(rf,
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_16_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
     \u0275\u0275elementEnd();
   }
@@ -44796,7 +44911,7 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_17_Template(rf,
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_19_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E2B\u0E49\u0E2D\u0E07");
     \u0275\u0275elementEnd();
   }
@@ -44815,7 +44930,7 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_20_Template(rf,
 }
 function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "mat-header-cell", 58);
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
     \u0275\u0275text(1, "\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C");
     \u0275\u0275elementEnd();
   }
@@ -44833,12 +44948,32 @@ function InventoryListComponent_Defer_43_Conditional_35_mat_cell_23_Template(rf,
     \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, element_r20.description), " ");
   }
 }
-function InventoryListComponent_Defer_43_Conditional_35_mat_header_row_24_Template(rf, ctx) {
+function InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_25_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "mat-header-cell", 59);
+    \u0275\u0275text(1, "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C");
+    \u0275\u0275elementEnd();
+  }
+}
+function InventoryListComponent_Defer_43_Conditional_35_mat_cell_26_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "mat-cell");
+    \u0275\u0275text(1);
+    \u0275\u0275pipe(2, "thaiDate");
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const element_r21 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, element_r21.createdAt), " ");
+  }
+}
+function InventoryListComponent_Defer_43_Conditional_35_mat_header_row_27_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "mat-header-row");
   }
 }
-function InventoryListComponent_Defer_43_Conditional_35_mat_row_25_Template(rf, ctx) {
+function InventoryListComponent_Defer_43_Conditional_35_mat_row_28_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "mat-row");
   }
@@ -44869,23 +45004,26 @@ function InventoryListComponent_Defer_43_Conditional_35_Template(rf, ctx) {
     \u0275\u0275elementContainerStart(21, 50);
     \u0275\u0275template(22, InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_22_Template, 2, 0, "mat-header-cell", 43)(23, InventoryListComponent_Defer_43_Conditional_35_mat_cell_23_Template, 3, 3, "mat-cell", 44);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275template(24, InventoryListComponent_Defer_43_Conditional_35_mat_header_row_24_Template, 1, 0, "mat-header-row", 51)(25, InventoryListComponent_Defer_43_Conditional_35_mat_row_25_Template, 1, 0, "mat-row", 52);
+    \u0275\u0275elementContainerStart(24, 51);
+    \u0275\u0275template(25, InventoryListComponent_Defer_43_Conditional_35_mat_header_cell_25_Template, 2, 0, "mat-header-cell", 43)(26, InventoryListComponent_Defer_43_Conditional_35_mat_cell_26_Template, 3, 3, "mat-cell", 44);
+    \u0275\u0275elementContainerEnd();
+    \u0275\u0275template(27, InventoryListComponent_Defer_43_Conditional_35_mat_header_row_27_Template, 1, 0, "mat-header-row", 52)(28, InventoryListComponent_Defer_43_Conditional_35_mat_row_28_Template, 1, 0, "mat-row", 53);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext(2);
-    \u0275\u0275property("dataSource", ctx_r4.dataSource);
+    const ctx_r3 = \u0275\u0275nextContext(2);
+    \u0275\u0275property("dataSource", ctx_r3.dataSource);
     \u0275\u0275advance();
-    \u0275\u0275conditional(1, ctx_r4.isSelected ? 1 : -1);
-    \u0275\u0275advance(23);
-    \u0275\u0275property("matHeaderRowDef", ctx_r4.displayedColumns);
+    \u0275\u0275conditional(1, ctx_r3.isSelected ? 1 : -1);
+    \u0275\u0275advance(26);
+    \u0275\u0275property("matHeaderRowDef", ctx_r3.displayedColumns);
     \u0275\u0275advance();
-    \u0275\u0275property("matRowDefColumns", ctx_r4.displayedColumns);
+    \u0275\u0275property("matRowDefColumns", ctx_r3.displayedColumns);
   }
 }
 function InventoryListComponent_Defer_43_Conditional_36_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "app-loading-data", 61);
+    \u0275\u0275element(0, "app-loading-data", 62);
   }
   if (rf & 2) {
     \u0275\u0275property("form", "list");
@@ -44900,8 +45038,8 @@ function InventoryListComponent_Defer_43_Template(rf, ctx) {
     \u0275\u0275elementStart(4, "button", 29);
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_Template_button_click_4_listener() {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.onResetFilter());
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.onResetFilter());
     });
     \u0275\u0275text(5, " \u0E23\u0E35\u0E40\u0E0B\u0E47\u0E15 ");
     \u0275\u0275elementEnd()();
@@ -44912,7 +45050,7 @@ function InventoryListComponent_Defer_43_Template(rf, ctx) {
     \u0275\u0275text(13);
     \u0275\u0275template(14, InventoryListComponent_Defer_43_Conditional_14_Template, 2, 1, "span", 32);
     \u0275\u0275elementEnd();
-    \u0275\u0275repeaterCreate(15, InventoryListComponent_Defer_43_For_16_Template, 2, 2, "mat-option", 18, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(15, InventoryListComponent_Defer_43_For_16_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(17, "mat-form-field")(18, "mat-label");
     \u0275\u0275text(19, "\u0E2A\u0E16\u0E32\u0E19\u0E30");
@@ -44921,7 +45059,7 @@ function InventoryListComponent_Defer_43_Template(rf, ctx) {
     \u0275\u0275text(22);
     \u0275\u0275template(23, InventoryListComponent_Defer_43_Conditional_23_Template, 2, 1, "span", 32);
     \u0275\u0275elementEnd();
-    \u0275\u0275repeaterCreate(24, InventoryListComponent_Defer_43_For_25_Template, 2, 2, "mat-option", 18, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275repeaterCreate(24, InventoryListComponent_Defer_43_For_25_Template, 2, 2, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(26, "mat-form-field")(27, "mat-label");
     \u0275\u0275text(28, "\u0E01\u0E23\u0E2D\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25");
@@ -44929,66 +45067,66 @@ function InventoryListComponent_Defer_43_Template(rf, ctx) {
     \u0275\u0275elementStart(29, "input", 34, 2);
     \u0275\u0275listener("keyup", function InventoryListComponent_Defer_43_Template_input_keyup_29_listener($event) {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.applyFilter($event));
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.applyFilter($event));
     });
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(31, "div", 35)(32, "mat-slide-toggle", 36);
     \u0275\u0275twoWayListener("ngModelChange", function InventoryListComponent_Defer_43_Template_mat_slide_toggle_ngModelChange_32_listener($event) {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      \u0275\u0275twoWayBindingSet(ctx_r4.isSelected, $event) || (ctx_r4.isSelected = $event);
+      const ctx_r3 = \u0275\u0275nextContext();
+      \u0275\u0275twoWayBindingSet(ctx_r3.isSelected, $event) || (ctx_r3.isSelected = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_Template_mat_slide_toggle_click_32_listener() {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.isSelectPrint());
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.isSelectPrint());
     });
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(33, "button", 37);
     \u0275\u0275listener("click", function InventoryListComponent_Defer_43_Template_button_click_33_listener() {
       \u0275\u0275restoreView(_r6);
-      const ctx_r4 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r4.addToPrint());
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.addToPrint());
     });
     \u0275\u0275text(34, " \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E44\u0E1B\u0E22\u0E31\u0E07\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E1E\u0E34\u0E21\u0E1E\u0E4C ");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(35, InventoryListComponent_Defer_43_Conditional_35_Template, 26, 4, "mat-table", 38)(36, InventoryListComponent_Defer_43_Conditional_36_Template, 1, 1);
+    \u0275\u0275template(35, InventoryListComponent_Defer_43_Conditional_35_Template, 29, 4, "mat-table", 38)(36, InventoryListComponent_Defer_43_Conditional_36_Template, 1, 1);
     \u0275\u0275element(37, "mat-paginator", 39);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r4 = \u0275\u0275nextContext();
+    const ctx_r3 = \u0275\u0275nextContext();
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(ctx_r4.title);
+    \u0275\u0275textInterpolate(ctx_r3.title);
     \u0275\u0275advance(4);
-    \u0275\u0275property("formGroup", ctx_r4.form);
+    \u0275\u0275property("formGroup", ctx_r3.form);
     \u0275\u0275advance(6);
-    \u0275\u0275textInterpolate1(" ", (ctx_r4.category.value == null ? null : ctx_r4.category.value[0]) || "", " ");
+    \u0275\u0275textInterpolate1(" ", (ctx_r3.category.value == null ? null : ctx_r3.category.value[0]) || "", " ");
     \u0275\u0275advance();
-    \u0275\u0275conditional(14, ((ctx_r4.category.value == null ? null : ctx_r4.category.value.length) || 0) > 1 ? 14 : -1);
+    \u0275\u0275conditional(14, ((ctx_r3.category.value == null ? null : ctx_r3.category.value.length) || 0) > 1 ? 14 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater(ctx_r4.filter.categories);
+    \u0275\u0275repeater(ctx_r3.filter.categories);
     \u0275\u0275advance(7);
-    \u0275\u0275textInterpolate1(" ", (ctx_r4.status.value == null ? null : ctx_r4.status.value[0]) || "", " ");
+    \u0275\u0275textInterpolate1(" ", (ctx_r3.status.value == null ? null : ctx_r3.status.value[0]) || "", " ");
     \u0275\u0275advance();
-    \u0275\u0275conditional(23, ((ctx_r4.status.value == null ? null : ctx_r4.status.value.length) || 0) > 1 ? 23 : -1);
+    \u0275\u0275conditional(23, ((ctx_r3.status.value == null ? null : ctx_r3.status.value.length) || 0) > 1 ? 23 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater(ctx_r4.filter.statuses);
+    \u0275\u0275repeater(ctx_r3.filter.statuses);
     \u0275\u0275advance(8);
-    \u0275\u0275twoWayProperty("ngModel", ctx_r4.isSelected);
+    \u0275\u0275twoWayProperty("ngModel", ctx_r3.isSelected);
     \u0275\u0275advance();
-    \u0275\u0275property("disabled", !ctx_r4.isSelected);
+    \u0275\u0275property("disabled", !ctx_r3.isSelected);
     \u0275\u0275advance(2);
-    \u0275\u0275conditional(35, !ctx_r4.isLoading ? 35 : 36);
+    \u0275\u0275conditional(35, !ctx_r3.isLoading ? 35 : 36);
     \u0275\u0275advance(2);
     \u0275\u0275property("pageSizeOptions", \u0275\u0275pureFunction0(10, _c18));
   }
 }
 function InventoryListComponent_DeferPlaceholder_44_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "app-loading-data", 61);
+    \u0275\u0275element(0, "app-loading-data", 62);
   }
   if (rf & 2) {
     \u0275\u0275property("form", "list");
@@ -45039,12 +45177,13 @@ var _InventoryListComponent = class _InventoryListComponent {
       "category",
       "status",
       "location",
-      "description"
+      "description",
+      "createdAt"
     ];
     this.dataSource = new MatTableDataSource([]);
     this.selection = new SelectionModel(true, []);
     this.isFirstLoading = false;
-    this.search = new FormControl();
+    this.search = new FormControl("");
     this.cache = [];
   }
   ngOnInit() {
@@ -45077,7 +45216,7 @@ var _InventoryListComponent = class _InventoryListComponent {
         this.dataSource.data = inventory;
         return;
       }
-      this.operation$ = this.inventoryApiService.getByCode(code);
+      this.operation$ = this.inventoryApiService.searchByCode(code);
     }
     this.isLoading = true;
     this.isSort = false;
@@ -45178,7 +45317,7 @@ var _InventoryListComponent = class _InventoryListComponent {
       this.dataSource.sort = this.sort;
       if (!this.isSort) {
         this.dataSource.sort.sort({
-          id: "no",
+          id: "createdAt",
           start: "desc",
           disableClear: true
         });
@@ -45206,7 +45345,7 @@ var _InventoryListComponent = class _InventoryListComponent {
   }
   _filter(value2) {
     const filterValue = value2.toLowerCase();
-    return this.cache.filter((option) => option.toLowerCase().includes(filterValue));
+    return this.cache.filter((option) => option.toLowerCase().startsWith(filterValue));
   }
 };
 _InventoryListComponent.\u0275fac = function InventoryListComponent_Factory(t2) {
@@ -45224,7 +45363,7 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.sort = _t2.first);
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.filterInput = _t2.first);
   }
-}, decls: 47, vars: 13, consts: [["picker", ""], ["auto", "matAutocomplete"], ["filterInput", ""], [300], ["routerLink", "new", "mat-fab", "", "color", "primary", 1, "mb-20"], [1, "mb-20", "mat-elevation-z8"], ["mat-stretch-tabs", "false", 3, "selectedIndexChange", "selectedIndex"], ["label", "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48"], [1, "w-100"], [3, "rangePicker", "formGroup"], ["matStartDate", "", "formControlName", "start", "readonly", "", 3, "click"], ["matEndDate", "", "formControlName", "end", "readonly", "", 3, "click"], ["align", "end"], ["matIconSuffix", "", 3, "for"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit"], ["type", "text", "matInput", "", 3, "input", "formControl", "matAutocomplete"], ["autoActiveFirstOption", ""], [3, "value"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 3, "click", "disabled"], ["mode", "indeterminate"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"], [1, "mat-elevation-z8"], [1, "mb-16", "d-flex", "justify-between", "align-center"], ["type", "button", "mat-button", "", "color", "warn", 3, "click"], [1, "filter-box", 3, "formGroup"], ["formControlName", "category", "multiple", ""], [1, "additional-selection"], ["formControlName", "status", "multiple", ""], ["matInput", "", 3, "keyup"], [1, "d-flex", "align-center", "gap-10"], [3, "ngModelChange", "click", "ngModel"], ["type", "button", "mat-button", "", "color", "accent", 3, "click", "disabled"], ["matSort", "", 3, "dataSource"], ["showFirstLastButtons", "", 3, "pageSizeOptions"], [3, "click", "value"], ["matColumnDef", "select"], ["matColumnDef", "no"], ["mat-sort-header", "", 4, "matHeaderCellDef"], [4, "matCellDef"], ["matColumnDef", "image"], ["matColumnDef", "code"], ["matColumnDef", "category"], ["matColumnDef", "status"], ["matColumnDef", "location"], ["matColumnDef", "description"], [4, "matHeaderRowDef"], [4, "matRowDef", "matRowDefColumns"], ["class", "p-0", 4, "matHeaderCellDef"], ["class", "p-0", 4, "matCellDef"], [1, "p-0"], [3, "change", "checked", "indeterminate"], [3, "click", "change", "checked"], ["mat-sort-header", ""], [1, "blurred-img", 3, "routerLink"], [3, "defaultImage", "lazyLoad"], [3, "form"]], template: function InventoryListComponent_Template(rf, ctx) {
+}, decls: 47, vars: 13, consts: [["picker", ""], ["auto", "matAutocomplete"], ["filterInput", ""], [300], ["routerLink", "new", "mat-fab", "", "color", "primary", 1, "mb-20"], [1, "mb-20", "mat-elevation-z8"], ["mat-stretch-tabs", "false", 3, "selectedIndexChange", "selectedIndex"], ["label", "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48"], [1, "w-100"], [3, "rangePicker", "formGroup"], ["matStartDate", "", "formControlName", "start", "readonly", "", 3, "click"], ["matEndDate", "", "formControlName", "end", "readonly", "", 3, "click"], ["align", "end"], ["matIconSuffix", "", 3, "for"], ["label", "\u0E23\u0E2B\u0E31\u0E2A\u0E04\u0E23\u0E38\u0E20\u0E31\u0E13\u0E11\u0E4C"], [3, "ngSubmit"], ["type", "text", "matInput", "", "appAutoCode", "", 3, "input", "formControl", "matAutocomplete"], [3, "value"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click", 4, "ngIf"], ["type", "submit", "matSuffix", "", "mat-icon-button", ""], ["matSuffix", "", "fontIcon", "search"], [1, "justify-between"], ["type", "button", "mat-raised-button", "", "color", "primary", 3, "click", "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 3, "click", "disabled"], ["mode", "indeterminate"], [3, "innerHTML"], ["type", "button", "matSuffix", "", "mat-icon-button", "", "color", "primary", 3, "click"], [1, "mat-elevation-z8"], [1, "mb-16", "d-flex", "justify-between", "align-center"], ["type", "button", "mat-button", "", "color", "warn", 3, "click"], [1, "filter-box", 3, "formGroup"], ["formControlName", "category", "multiple", ""], [1, "additional-selection"], ["formControlName", "status", "multiple", ""], ["matInput", "", 3, "keyup"], [1, "d-flex", "align-center", "gap-10"], [3, "ngModelChange", "click", "ngModel"], ["type", "button", "mat-button", "", "color", "accent", 3, "click", "disabled"], ["matSort", "", 3, "dataSource"], ["showFirstLastButtons", "", 3, "pageSizeOptions"], [3, "click", "value"], ["matColumnDef", "select"], ["matColumnDef", "no"], ["mat-sort-header", "", 4, "matHeaderCellDef"], [4, "matCellDef"], ["matColumnDef", "image"], ["matColumnDef", "code"], ["matColumnDef", "category"], ["matColumnDef", "status"], ["matColumnDef", "location"], ["matColumnDef", "description"], ["matColumnDef", "createdAt"], [4, "matHeaderRowDef"], [4, "matRowDef", "matRowDefColumns"], ["class", "p-0", 4, "matHeaderCellDef"], ["class", "p-0", 4, "matCellDef"], [1, "p-0"], [3, "change", "checked", "indeterminate"], [3, "click", "change", "checked"], ["mat-sort-header", ""], [1, "blurred-img", 3, "routerLink"], [3, "defaultImage", "lazyLoad"], [3, "form"]], template: function InventoryListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "a", 4)(1, "mat-icon");
@@ -45271,17 +45410,17 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
       return \u0275\u0275resetView(ctx.onSearchAutoComplete(ctx.search.value));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(25, "mat-autocomplete", 17, 1);
-    \u0275\u0275repeaterCreate(27, InventoryListComponent_For_28_Template, 2, 2, "mat-option", 18, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275elementStart(25, "mat-autocomplete", null, 1);
+    \u0275\u0275repeaterCreate(27, InventoryListComponent_For_28_Template, 3, 5, "mat-option", 17, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275pipe(29, "async");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(30, InventoryListComponent_button_30_Template, 3, 0, "button", 19);
-    \u0275\u0275elementStart(31, "button", 20);
-    \u0275\u0275element(32, "mat-icon", 21);
+    \u0275\u0275template(30, InventoryListComponent_button_30_Template, 3, 0, "button", 18);
+    \u0275\u0275elementStart(31, "button", 19);
+    \u0275\u0275element(32, "mat-icon", 20);
     \u0275\u0275elementEnd()()()()();
     \u0275\u0275text(33, "> ");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "mat-card-actions", 22)(35, "button", 23);
+    \u0275\u0275elementStart(34, "mat-card-actions", 21)(35, "button", 22);
     \u0275\u0275listener("click", function InventoryListComponent_Template_button_click_35_listener() {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.onSearch());
@@ -45291,7 +45430,7 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275elementEnd();
     \u0275\u0275text(38, " \u0E04\u0E49\u0E19\u0E2B\u0E32 ");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(39, "button", 24);
+    \u0275\u0275elementStart(39, "button", 23);
     \u0275\u0275listener("click", function InventoryListComponent_Template_button_click_39_listener() {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.onSearchAll());
@@ -45299,14 +45438,14 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275text(40, " \u0E04\u0E49\u0E19\u0E2B\u0E32\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 ");
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(41, "mat-card-footer");
-    \u0275\u0275template(42, InventoryListComponent_Conditional_42_Template, 1, 0, "mat-progress-bar", 25);
+    \u0275\u0275template(42, InventoryListComponent_Conditional_42_Template, 1, 0, "mat-progress-bar", 24);
     \u0275\u0275elementEnd()();
     \u0275\u0275template(43, InventoryListComponent_Defer_43_Template, 38, 11)(44, InventoryListComponent_DeferPlaceholder_44_Template, 1, 1);
     \u0275\u0275defer(45, 43, InventoryListComponent_Defer_45_DepsFn, null, 44, null, null, 3, \u0275\u0275deferEnableTimerScheduling);
   }
   if (rf & 2) {
     const picker_r2 = \u0275\u0275reference(17);
-    const auto_r21 = \u0275\u0275reference(26);
+    const auto_r22 = \u0275\u0275reference(26);
     \u0275\u0275advance(4);
     \u0275\u0275property("selectedIndex", ctx.selectedTap.value);
     \u0275\u0275advance(6);
@@ -45314,7 +45453,7 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275advance(5);
     \u0275\u0275property("for", picker_r2);
     \u0275\u0275advance(9);
-    \u0275\u0275property("formControl", ctx.search)("matAutocomplete", auto_r21);
+    \u0275\u0275property("formControl", ctx.search)("matAutocomplete", auto_r22);
     \u0275\u0275advance(3);
     \u0275\u0275repeater(\u0275\u0275pipeBind1(29, 11, ctx.filteredOptions));
     \u0275\u0275advance(3);
@@ -45328,7 +45467,7 @@ _InventoryListComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275advance(3);
     \u0275\u0275deferWhen(ctx.dataSource.data.length > 0 || ctx.isFirstLoading);
   }
-}, dependencies: [RouterLink, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, FormControlName, MatButton, MatIconButton, MatFabAnchor, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatHint, MatSuffix, MatProgressBar, MatOption, MatDatepickerToggle, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, LoadingDataComponent, NgForm, AsyncPipe], styles: ["\n\n.mat-column-select[_ngcontent-%COMP%] {\n  flex: 0 0 60px;\n}\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-category[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-status[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-location[_ngcontent-%COMP%] {\n  flex: 0 0 100px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\nimg[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\nmat-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n  transition: 0.2s;\n}\n.dark-theme[_nghost-%COMP%]   mat-row[_ngcontent-%COMP%]:hover, .dark-theme   [_nghost-%COMP%]   mat-row[_ngcontent-%COMP%]:hover {\n  background-color: #343434;\n}\n.filter-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n}\n.filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n  flex: 1 1 calc(25% - 10px);\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%]   .additional-selection[_ngcontent-%COMP%] {\n  opacity: 0.75;\n  font-size: 0.75em;\n}\n@media (max-width: 968px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(50% - 10px);\n  }\n}\n/*# sourceMappingURL=inventory-list.component.css.map */"] });
+}, dependencies: [RouterLink, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormControlDirective, FormGroupDirective, FormControlName, MatButton, MatIconButton, MatFabAnchor, MatIcon, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatInput, MatFormField, MatLabel, MatHint, MatSuffix, MatProgressBar, MatOption, MatDatepickerToggle, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, MatTab, MatTabGroup, MatAutocomplete, MatAutocompleteTrigger, LoadingDataComponent, NgForm, AutoCodeDirective, AsyncPipe, HighlightPipe], styles: ["\n\n.mat-column-select[_ngcontent-%COMP%] {\n  flex: 0 0 60px;\n}\n.mat-column-no[_ngcontent-%COMP%] {\n  flex: 0 0 70px;\n}\n.mat-column-image[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n  padding-block: 8px;\n}\n.mat-column-code[_ngcontent-%COMP%] {\n  flex: 0 0 140px;\n}\n.mat-column-category[_ngcontent-%COMP%] {\n  flex: 0 0 150px;\n}\n.mat-column-status[_ngcontent-%COMP%] {\n  flex: 0 0 120px;\n}\n.mat-column-location[_ngcontent-%COMP%] {\n  flex: 0 0 100px;\n}\n.mat-column-description[_ngcontent-%COMP%] {\n  min-width: 200px;\n}\nimg[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n}\nmat-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n  transition: 0.2s;\n}\n.dark-theme[_nghost-%COMP%]   mat-row[_ngcontent-%COMP%]:hover, .dark-theme   [_nghost-%COMP%]   mat-row[_ngcontent-%COMP%]:hover {\n  background-color: #343434;\n}\n.filter-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n}\n.filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n  flex: 1 1 calc(25% - 10px);\n  min-width: 150px;\n}\n.filter-box[_ngcontent-%COMP%]   .additional-selection[_ngcontent-%COMP%] {\n  opacity: 0.75;\n  font-size: 0.75em;\n}\n@media (max-width: 968px) {\n  .filter-box[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    flex: 1 1 calc(50% - 10px);\n  }\n}\n/*# sourceMappingURL=inventory-list.component.css.map */"] });
 var InventoryListComponent = _InventoryListComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(InventoryListComponent, { className: "InventoryListComponent", filePath: "src\\app\\modules\\dashboard\\components\\inventory\\inventory-list\\inventory-list.component.ts", lineNumber: 60 });
@@ -45339,7 +45478,7 @@ var _c015 = ["formDirec"];
 var _c19 = ["codeEl"];
 var _c24 = ["dateEl"];
 var _c33 = ["picker"];
-var InventoryNewComponent_Defer_2_DepsFn = () => [NgForOf, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatProgressBar, MatDatepicker, MatDatepickerInput, MatDatepickerToggle, MatChipListbox, MatChipOption, MatCheckbox, NgxDropzoneComponent, NgxDropzoneLabelDirective, NgxDropzoneImagePreviewComponent, NgxMaskDirective, ErrorFieldComponent];
+var InventoryNewComponent_Defer_2_DepsFn = () => [NgForOf, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardActions, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatProgressBar, MatDatepicker, MatDatepickerInput, MatDatepickerToggle, MatChipListbox, MatChipOption, MatCheckbox, NgxDropzoneComponent, NgxDropzoneLabelDirective, NgxDropzoneImagePreviewComponent, NgxMaskDirective, ErrorFieldComponent, AutoCodeDirective];
 function InventoryNewComponent_Defer_0_ng_container_0_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
@@ -45893,7 +46032,7 @@ _InventoryNewComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.dateEl = _t2.first);
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.picker = _t2.first);
   }
-}, decls: 4, vars: 1, consts: [["content", ""], ["formDirec", "ngForm"], ["codeEl", ""], ["dateEl", ""], ["picker", ""], [300], [4, "ngIf", "ngIfElse"], ["mat-flat-button", "", "color", "warn", 1, "w-100"], [1, "justify-between"], ["type", "button", "mat-button", "", "color", "warn", 3, "click", "disabled"], [1, "form-container", 3, "ngSubmit", "formGroup"], [1, "box"], [1, "dropzone", 3, "change", "accept", "multiple"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "file", "removable", "removed", 4, "ngFor", "ngForOf"], [3, "control", "errorMessage"], ["type", "text", "matInput", "", "formControlName", "code"], ["align", "end"], ["matInput", "", "formControlName", "description", "rows", "3"], [1, "d-flex", "flex-column"], ["formControlName", "category"], [3, "value"], ["formControlName", "status"], [1, "row"], ["type", "text", "matInput", "", "formControlName", "unit"], ["matInput", "", "type", "text", "mask", "separator.2", "thousandSeparator", ",", "decimalMarker", ".", "formControlName", "value"], ["matInput", "", "mask", "d0/M0/0000", "formControlName", "dateInput", 3, "focusout"], ["matInput", "", "formControlName", "receivedDate", 1, "hidden-input", 3, "dateInput", "matDatepicker"], ["matIconSuffix", "", "tabindex", "-1", 3, "for", "disabled"], ["type", "text", "matInput", "", "formControlName", "oldCode"], ["formControlName", "fund"], ["formControlName", "location"], ["matInput", "", "formControlName", "remark"], [1, "gap-20"], ["type", "submit", "mat-raised-button", "", "color", "primary", 3, "disabled"], [3, "change", "checked"], ["mode", "indeterminate"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "removed", "file", "removable"], [3, "selectionChange", "value"], [3, "form"]], template: function InventoryNewComponent_Template(rf, ctx) {
+}, decls: 4, vars: 1, consts: [["content", ""], ["formDirec", "ngForm"], ["codeEl", ""], ["dateEl", ""], ["picker", ""], [300], [4, "ngIf", "ngIfElse"], ["mat-flat-button", "", "color", "warn", 1, "w-100"], [1, "justify-between"], ["type", "button", "mat-button", "", "color", "warn", 3, "click", "disabled"], [1, "form-container", 3, "ngSubmit", "formGroup"], [1, "box"], [1, "dropzone", 3, "change", "accept", "multiple"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "file", "removable", "removed", 4, "ngFor", "ngForOf"], [3, "control", "errorMessage"], ["type", "text", "matInput", "", "formControlName", "code", "appAutoCode", ""], ["align", "end"], ["matInput", "", "formControlName", "description", "rows", "3"], [1, "d-flex", "flex-column"], ["formControlName", "category"], [3, "value"], ["formControlName", "status"], [1, "row"], ["type", "text", "matInput", "", "formControlName", "unit"], ["matInput", "", "type", "text", "mask", "separator.2", "thousandSeparator", ",", "decimalMarker", ".", "formControlName", "value"], ["matInput", "", "mask", "d0/M0/0000", "formControlName", "dateInput", 3, "focusout"], ["matInput", "", "formControlName", "receivedDate", 1, "hidden-input", 3, "dateInput", "matDatepicker"], ["matIconSuffix", "", "tabindex", "-1", 3, "for", "disabled"], ["type", "text", "matInput", "", "formControlName", "oldCode"], ["formControlName", "fund"], ["formControlName", "location"], ["matInput", "", "formControlName", "remark"], [1, "gap-20"], ["type", "submit", "mat-raised-button", "", "color", "primary", 3, "disabled"], [3, "change", "checked"], ["mode", "indeterminate"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "removed", "file", "removable"], [3, "selectionChange", "value"], [3, "form"]], template: function InventoryNewComponent_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275template(0, InventoryNewComponent_Defer_0_Template, 3, 2)(1, InventoryNewComponent_DeferPlaceholder_1_Template, 1, 1);
     \u0275\u0275defer(2, 0, InventoryNewComponent_Defer_2_DepsFn, null, 1, null, null, 5, \u0275\u0275deferEnableTimerScheduling);
@@ -46159,7 +46298,7 @@ var _c016 = ["formDirec"];
 var _c110 = ["codeEl"];
 var _c25 = ["dateEl"];
 var _c34 = ["picker"];
-var InventoryEditComponent_Defer_2_DepsFn = () => [NgForOf, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatDatepicker, MatDatepickerInput, MatDatepickerToggle, MatChipListbox, MatChipOption, NgxDropzoneComponent, NgxDropzoneLabelDirective, NgxDropzoneImagePreviewComponent, NgxMaskDirective, ErrorFieldComponent];
+var InventoryEditComponent_Defer_2_DepsFn = () => [NgForOf, NgIf, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButton, MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle, MatInput, MatFormField, MatLabel, MatHint, MatError, MatSuffix, MatDatepicker, MatDatepickerInput, MatDatepickerToggle, MatChipListbox, MatChipOption, NgxDropzoneComponent, NgxDropzoneLabelDirective, NgxDropzoneImagePreviewComponent, NgxMaskDirective, ErrorFieldComponent, AutoCodeDirective];
 function InventoryEditComponent_Defer_0_ng_container_0_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
@@ -46762,7 +46901,7 @@ _InventoryEditComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent(
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.dateEl = _t2.first);
     \u0275\u0275queryRefresh(_t2 = \u0275\u0275loadQuery()) && (ctx.picker = _t2.first);
   }
-}, decls: 4, vars: 1, consts: [["content", ""], ["formDirec", "ngForm"], ["codeEl", ""], ["dateEl", ""], ["picker", ""], [300], [4, "ngIf", "ngIfElse"], ["mat-flat-button", "", "color", "warn", 1, "w-100"], [1, "justify-between"], ["type", "button", "mat-button", "", "color", "warn", 3, "click", "disabled"], [1, "form-container", 3, "ngSubmit", "formGroup"], [1, "box"], [1, "dropzone", 3, "change", "accept", "multiple"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "file", "removable", "removed", 4, "ngFor", "ngForOf"], [3, "control", "errorMessage"], ["type", "text", "matInput", "", "formControlName", "code"], ["align", "end"], ["matInput", "", "formControlName", "description", 3, "rows"], [1, "d-flex", "flex-column"], ["formControlName", "category"], [3, "value"], ["formControlName", "status"], [1, "row"], ["type", "text", "matInput", "", "formControlName", "unit"], ["matInput", "", "type", "text", "mask", "separator.2", "thousandSeparator", ",", "decimalMarker", ".", "formControlName", "value"], ["matInput", "", "mask", "d0/M0/0000", "formControlName", "dateInput", 3, "focusout"], ["matInput", "", "formControlName", "receivedDate", 1, "hidden-input", 3, "dateInput", "matDatepicker"], ["matIconSuffix", "", 3, "for", "disabled"], ["type", "text", "matInput", "", "formControlName", "oldCode"], ["formControlName", "fund"], ["formControlName", "location"], ["matInput", "", "formControlName", "remark"], [1, "gap-20"], ["type", "submit", "mat-raised-button", "", "color", "primary", 3, "disabled"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "removed", "file", "removable"], [3, "selectionChange", "value"], [3, "form"]], template: function InventoryEditComponent_Template(rf, ctx) {
+}, decls: 4, vars: 1, consts: [["content", ""], ["formDirec", "ngForm"], ["codeEl", ""], ["dateEl", ""], ["picker", ""], [300], [4, "ngIf", "ngIfElse"], ["mat-flat-button", "", "color", "warn", 1, "w-100"], [1, "justify-between"], ["type", "button", "mat-button", "", "color", "warn", 3, "click", "disabled"], [1, "form-container", 3, "ngSubmit", "formGroup"], [1, "box"], [1, "dropzone", 3, "change", "accept", "multiple"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "file", "removable", "removed", 4, "ngFor", "ngForOf"], [3, "control", "errorMessage"], ["type", "text", "matInput", "", "formControlName", "code", "appAutoCode", ""], ["align", "end"], ["matInput", "", "formControlName", "description", 3, "rows"], [1, "d-flex", "flex-column"], ["formControlName", "category"], [3, "value"], ["formControlName", "status"], [1, "row"], ["type", "text", "matInput", "", "formControlName", "unit"], ["matInput", "", "type", "text", "mask", "separator.2", "thousandSeparator", ",", "decimalMarker", ".", "formControlName", "value"], ["matInput", "", "mask", "d0/M0/0000", "formControlName", "dateInput", 3, "focusout"], ["matInput", "", "formControlName", "receivedDate", 1, "hidden-input", 3, "dateInput", "matDatepicker"], ["matIconSuffix", "", 3, "for", "disabled"], ["type", "text", "matInput", "", "formControlName", "oldCode"], ["formControlName", "fund"], ["formControlName", "location"], ["matInput", "", "formControlName", "remark"], [1, "gap-20"], ["type", "submit", "mat-raised-button", "", "color", "primary", 3, "disabled"], ["ngProjectAs", "ngx-dropzone-preview", 5, ["ngx-dropzone-preview"], 3, "removed", "file", "removable"], [3, "selectionChange", "value"], [3, "form"]], template: function InventoryEditComponent_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275template(0, InventoryEditComponent_Defer_0_Template, 3, 2)(1, InventoryEditComponent_DeferPlaceholder_1_Template, 1, 1);
     \u0275\u0275defer(2, 0, InventoryEditComponent_Defer_2_DepsFn, null, 1, null, null, 5, \u0275\u0275deferEnableTimerScheduling);
@@ -57822,24 +57961,6 @@ _DashboardRoutingModule.\u0275mod = /* @__PURE__ */ \u0275\u0275defineNgModule({
 _DashboardRoutingModule.\u0275inj = /* @__PURE__ */ \u0275\u0275defineInjector({ imports: [RouterModule.forChild(routes), RouterModule] });
 var DashboardRoutingModule = _DashboardRoutingModule;
 
-// src/app/modules/dashboard/pipes/search.pipe.ts
-var _SearchPipe = class _SearchPipe {
-  transform(value2, searchText) {
-    if (!value2 || !value2.length)
-      return value2;
-    if (!searchText || !searchText.length)
-      return value2;
-    return value2.filter((item) => {
-      return item.toString().toLowerCase().indexOf(searchText.toLowerCase()) > -1;
-    });
-  }
-};
-_SearchPipe.\u0275fac = function SearchPipe_Factory(t2) {
-  return new (t2 || _SearchPipe)();
-};
-_SearchPipe.\u0275pipe = /* @__PURE__ */ \u0275\u0275definePipe({ name: "search", type: _SearchPipe, pure: true });
-var SearchPipe = _SearchPipe;
-
 // src/app/modules/dashboard/dashboard.module.ts
 var _DashboardModule = class _DashboardModule {
 };
@@ -58038,4 +58159,4 @@ jspdf/dist/jspdf.es.min.js:
    * http://opensource.org/licenses/mit-license
    *)
 */
-//# sourceMappingURL=chunk-J4U3D3YN.js.map
+//# sourceMappingURL=chunk-2UI4GLYQ.js.map

@@ -18,6 +18,9 @@ exports.inventoryService = {
             attributes: ['code'],
         });
     },
+    searchByCode(code) {
+        return inventory_model_1.default.findAll(Object.assign({ where: { code: { [sequelize_1.Op.like]: `${code}%` } } }, queryOptions()));
+    },
     findAll() {
         return inventory_model_1.default.findAll(Object.assign({}, queryOptions()));
     },

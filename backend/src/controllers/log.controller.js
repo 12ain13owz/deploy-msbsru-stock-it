@@ -9,9 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findLogByIdController = exports.findLogByCodeController = exports.findLogByTrackController = exports.findLogByDateController = exports.findAllLogController = exports.initialLogController = void 0;
+exports.findLogByIdController = exports.findLogByCodeController = exports.findLogByTrackController = exports.findLogByDateController = exports.findAllLogController = exports.initialLogController = exports.searchLogByCodeController = void 0;
 const helper_1 = require("../utils/helper");
 const log_service_1 = require("../services/log.service");
+function searchLogByCodeController(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.locals.func = 'searchLogByCodeController';
+        try {
+            const query = (0, helper_1.removeWhitespace)(req.query.code);
+            const resLogs = yield log_service_1.logService.searchByCode(query);
+            res.json(resLogs);
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
+exports.searchLogByCodeController = searchLogByCodeController;
 function initialLogController(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         res.locals.func = 'initialLogController';

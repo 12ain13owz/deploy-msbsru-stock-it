@@ -7,6 +7,11 @@ exports.logService = void 0;
 const sequelize_1 = require("sequelize");
 const log_model_1 = __importDefault(require("../models/log.model"));
 exports.logService = {
+    searchByCode(code) {
+        return log_model_1.default.findAll({
+            where: { code: { [sequelize_1.Op.like]: `${code}%` } },
+        });
+    },
     findAll() {
         return log_model_1.default.findAll();
     },
