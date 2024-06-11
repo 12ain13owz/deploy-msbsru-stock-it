@@ -48,7 +48,7 @@ exports.inventoryService = {
         return inventory_model_1.default.findOne(Object.assign({ where: { code } }, queryOptions()));
     },
     findByDate(dateStart, dateEnd) {
-        return inventory_model_1.default.findAll(Object.assign({ where: { createdAt: { [sequelize_1.Op.between]: [dateStart, dateEnd] } } }, queryOptions()));
+        return inventory_model_1.default.findAll(Object.assign({ where: { receivedDate: { [sequelize_1.Op.between]: [dateStart, dateEnd] } } }, queryOptions()));
     },
     create(inventory, t) {
         return inventory_model_1.default.create(inventory.toJSON(), {
